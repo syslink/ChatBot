@@ -29,7 +29,7 @@ async function msgHandler(msg) {
   }
   switch (true) {
     case msg.text.startsWith('/start'):
-      await bot.sendMessage(msg.chat.id, '👋你好！很高兴能与您交谈。有什么我可以帮您的吗？');
+      await bot.sendMessage(msg.chat.id, '👋您好！我是ChatGPT，很高兴能与您交谈？');
       break;
     case msg.text.length >= 2:
       await chatGpt(msg);
