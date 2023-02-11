@@ -76,10 +76,10 @@ async function getResponseFromOpenAI(msg, tempId) {
                 // await bot.editMessageText(completionResult, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
                 return; // Stream finished
             }
-            try {
+            try { 
                 const parsed = JSON.parse(message);
-                //completionResult += parsed.choices[0].text;
-                await bot.editMessageText(parsed.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+                completionResult += parsed.choices[0].text;
+                await bot.editMessageText(completionResult, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
             } catch(error) {
                 console.error('Could not JSON parse stream message', message, error);
             }
