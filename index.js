@@ -10,16 +10,13 @@ dotenv.config()
 
 const { token, apiKey, group_name } = process.env
 const prefix = group_name ? '/' + group_name : '/gpt'
-const bot = new TelegramBot(token, { polling: true, request:{
-  agentClass: Agent,
-  agentOptions: {
-      socksHost: 'localhost',
-      socksPort: '4781'
-  }
-} });
+const bot = new TelegramBot(token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
 
-const api = new ChatGPTAPI({ apiKey })
+const api = new ChatGPTAPI({ apiKey, completionParams: {
+  temperature: 0.9,
+  presence_penalty: 0,
+} })
 
 bot.on('text', async (msg) => {
   console.log(new Date().toLocaleString(), '--Received message from id:', msg.chat.id, ':', msg.text);
@@ -45,7 +42,7 @@ async function msgHandler(msg) {
 
 async function chatGpt(msg) {
   try {
-    const tempId = (await bot.sendMessage(msg.chat.id, '🤔正在组织语言，请稍等...', {
+    const tempId = (await bot.sendMessage(msg.chat.id, '🤔正在思考并组织语言，请稍等...', {
       reply_to_message_id: msg.message_id
     })).message_id;
     bot.sendChatAction(msg.chat.id, 'typing');
