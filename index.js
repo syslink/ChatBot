@@ -49,17 +49,57 @@ async function chatGpt(msg) {
     })).message_id;
     bot.sendChatAction(msg.chat.id, 'typing');
     //const response = await api.sendMessage(msg.text.replace(prefix, ''))
-
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: msg.text.replace(prefix, ''),
-    });
-    const text =  response.data.choices[0].text;
-    console.log(new Date().toLocaleString(), '--AI response to <', msg.text, '>:', text);
-    await bot.editMessageText(text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+    await getResponseFromOpenAI(msg, tempId);
   } catch (err) {
     console.log('Error:', err)
     await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试；如果您是管理员，请检查日志。');
     throw err
+  }
+}
+
+async function getResponseFromOpenAI(msg, tempId) {
+  try {
+    const res = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: msg.text.replace(prefix, ''),
+        max_tokens: 1000,
+        stream: true,
+    }, { responseType: 'stream' });
+    
+    let completionResult = '';
+    res.data.on('data', async (data) => {
+        const lines = data.toString().split('\n').filter(line => line.trim() !== '');
+        for (const line of lines) {
+            const message = line.replace(/^data: /, '');
+            if (message === '[DONE]') {
+                // console.log(new Date().toLocaleString(), '--AI response: ', completionResult);
+                // await bot.editMessageText(completionResult, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+                return; // Stream finished
+            }
+            try {
+                const parsed = JSON.parse(message);
+                //completionResult += parsed.choices[0].text;
+                await bot.editMessageText(parsed.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+            } catch(error) {
+                console.error('Could not JSON parse stream message', message, error);
+            }
+        }
+    });
+  } catch (error) {
+      if (error.response?.status) {
+          console.error(error.response.status, error.message);
+          error.response.data.on('data', async (data) => {
+              const message = data.toString();
+              try {
+                  const parsed = JSON.parse(message);
+                  console.error('An error occurred during OpenAI request: ', parsed);
+              } catch(error) {
+                  console.error('An error occurred during OpenAI request: ', message);
+              }
+          });
+      } else {
+          console.error('An error occurred during OpenAI request', error);
+      }
+      await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试');
   }
 }
