@@ -8,14 +8,14 @@ const { Agent } = pkg;
 
 dotenv.config()
 
-const { token, apiKey, group_name } = process.env
+const { token, apiKey, group_name, temperature, presence_penalty } = process.env
 const prefix = group_name ? '/' + group_name : '/gpt'
 const bot = new TelegramBot(token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
 
 const api = new ChatGPTAPI({ apiKey, completionParams: {
-  temperature: 0.9,
-  presence_penalty: 0,
+  temperature,
+  presence_penalty,
 } })
 
 bot.on('text', async (msg) => {
