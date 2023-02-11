@@ -26,7 +26,7 @@ bot.on('text', async (msg) => {
 });
 
 async function msgHandler(msg) {
-  if (typeof msg.text !== 'string' || ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && !msg.text.startsWith(prefix))) {
+  if (typeof msg.text !== 'string' || ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && !msg.text.startsWith(prefix))) {  
     return;
   }
   switch (true) {
@@ -47,7 +47,6 @@ async function chatGpt(msg) {
     const tempId = (await bot.sendMessage(msg.chat.id, '🤔正在思考并组织语言，请稍等...', {
       reply_to_message_id: msg.message_id
     })).message_id;
-    bot.sendChatAction(msg.chat.id, 'typing');
     //const response = await api.sendMessage(msg.text.replace(prefix, ''))
     await getResponseFromOpenAI(msg, tempId);
   } catch (err) {
@@ -59,32 +58,21 @@ async function chatGpt(msg) {
 
 async function getResponseFromOpenAI(msg, tempId) {
   try {
+    bot.sendChatAction(msg.chat.id, 'typing');
+    const intervalId = setInterval(() => {
+        bot.sendChatAction(msg.chat.id, 'typing');
+    }, 5000);
     const res = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: msg.text.replace(prefix, ''),
-        max_tokens: 1000,
-        stream: true,
-    }, { responseType: 'stream' });
-    
-    let completionResult = '';
-    res.data.on('data', async (data) => {
-        const lines = data.toString().split('\n').filter(line => line.trim() !== '');
-        for (const line of lines) {
-            const message = line.replace(/^data: /, '');
-            if (message === '[DONE]') {
-                // console.log(new Date().toLocaleString(), '--AI response: ', completionResult);
-                // await bot.editMessageText(completionResult, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
-                return; // Stream finished
-            }
-            try { 
-                const parsed = JSON.parse(message);
-                completionResult += parsed.choices[0].text;
-                await bot.editMessageText(completionResult, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
-            } catch(error) {
-                console.error('Could not JSON parse stream message', message, error);
-            }
-        }
-    });
+        max_tokens: 4000,
+        n:1,
+        stop: "",
+    }, { responseType: 'json' });
+    clearInterval(intervalId);
+    console.log(res.data.choices[0].text);
+    await bot.editMessageText(res.data.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+    return;
   } catch (error) {
       if (error.response?.status) {
           console.error(error.response.status, error.message);
