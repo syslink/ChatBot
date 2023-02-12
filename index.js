@@ -66,8 +66,8 @@ async function getResponseFromOpenAI(msg, tempId) {
         model: "text-davinci-003",
         prompt: msg.text.replace(prefix, ''),
         max_tokens: 4000,
-        n:1,
-        stop: "",
+        top_p: 1,
+        stop: "###",
     }, { responseType: 'json' });
     clearInterval(intervalId);
     console.log(res.data.choices[0].text);
@@ -75,16 +75,7 @@ async function getResponseFromOpenAI(msg, tempId) {
     return;
   } catch (error) {
       if (error.response?.status) {
-          console.error(error.response.status, error.message);
-          error.response.data.on('data', async (data) => {
-              const message = data.toString();
-              try {
-                  const parsed = JSON.parse(message);
-                  console.error('An error occurred during OpenAI request: ', parsed);
-              } catch(error) {
-                  console.error('An error occurred during OpenAI request: ', message);
-              }
-          });
+          console.error(error.response.status, error.message);          
       } else {
           console.error('An error occurred during OpenAI request', error);
       }
