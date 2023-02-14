@@ -154,7 +154,7 @@ async function msgHandler(msg) {
 
 async function chatGpt(msg, bVoice) {
   try {
-    await getResponseFromOpenAI(msg, tempId, bVoice);
+    await getResponseFromOpenAI(msg, bVoice);
   } catch (err) {
     console.log('Error:', err)
     await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试；如果您是管理员，请检查日志。');
