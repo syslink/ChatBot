@@ -16,7 +16,7 @@ const ffmpeg = new FfmpegCommand();
 
 dotenv.config()
 
-const { textbot_token, speakbot_token, apiKey, speechAPIKey, group_name, SPEECH_KEY, SPEECH_REGION } = process.env
+const { textbot_token, speakbot_token, apiKey, gptModel, group_name, SPEECH_KEY, SPEECH_REGION } = process.env
 const prefix = group_name ? '/' + group_name : '/gpt'
 const bot = new TelegramBot(speakbot_token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
@@ -167,7 +167,7 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
         bot.sendChatAction(msg.chat.id, 'typing');
     }, 5000);
     const res = await openai.createCompletion({
-        model: "text-davinci-003",
+        model: gptModel,
         prompt: msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text,
         max_tokens: bVoice ? 200 : 1000,
         top_p: 1,
