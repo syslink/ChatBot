@@ -39,7 +39,7 @@ function recognizeVoice(msg, fileName) {
   speechRecognizer.recognizeOnceAsync(result => {
       switch (result.reason) {
           case ResultReason.RecognizedSpeech:
-              console.log(`RECOGNIZED: Text=${result.text}`);
+              console.log(`RECOGNIZED Text = ${result.text}`);
               msg.text = result.text;
               msgHandler(msg);
               break;
@@ -77,7 +77,7 @@ function synthesizeVoice(text, msg) {
         ffmpeg.input(fileName)
             .output(outputFileName)
             .on('end', function() {
-              console.log('wav文件转换为ogg格式成功！');
+              console.log(fileName + ' => ' + outputFileName);
               bot.sendVoice(chatId, outputFileName);
             })
             .on('error', function(err) {
@@ -104,10 +104,17 @@ bot.on('text', async (msg) => {
   await msgHandler(msg);
 });
 
+let lastMsgChatId = 0;
+
 bot.on('voice', msg => {
   const fileId = msg.voice.file_id;
   const chatId = msg.chat.id;
   const msgId = msg.message_id;
+  if (lastMsgChatId == msgId) {
+    console.log('same chat id', msgId)
+    return;
+  }
+  lastMsgChatId = msgId;
   bot.getFileLink(fileId).then(fileLink => {
     // 下载语音文件
     bot.downloadFile(fileId, './').then(voicePath => {
@@ -117,7 +124,7 @@ bot.on('voice', msg => {
       ffmpeg.input(fileName)
             .output(outputFileName)
             .on('end', function() {
-              console.log('ogg文件转换为wav格式成功！');
+              console.log('\n\n' + fileName + ' 成功转换为 ' + outputFileName);
               recognizeVoice(msg, outputFileName);
             })
             .on('error', function(err) {
@@ -147,10 +154,6 @@ async function msgHandler(msg) {
 
 async function chatGpt(msg, bVoice) {
   try {
-    const tempId = (await bot.sendMessage(msg.chat.id, '🤔正在思考并组织语言，请稍等...', {
-      reply_to_message_id: msg.message_id
-    })).message_id;
-    //const response = await api.sendMessage(msg.text.replace(prefix, ''))
     await getResponseFromOpenAI(msg, tempId, bVoice);
   } catch (err) {
     console.log('Error:', err)
@@ -159,7 +162,7 @@ async function chatGpt(msg, bVoice) {
   }
 }
 
-async function getResponseFromOpenAI(msg, tempId, bVoice) {
+async function getResponseFromOpenAI(msg, bVoice) {
   let intervalId;
   try {
     bot.sendChatAction(msg.chat.id, 'typing');
@@ -174,13 +177,13 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
         stop: "###",
     }, { responseType: 'json' });
     let resText = res.data.choices[0].text;
-    console.log(resText);
     clearInterval(intervalId);
     if (resText.indexOf("\n\n") > 0) {
         resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length);
     }
+    console.log(resText);
     if (!bVoice)
-      await bot.editMessageText(resText, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+      await bot.sendMessage(msg.chat.id, resText, { parse_mode: 'Markdown' });
     else {
       synthesizeVoice(resText, msg);
     }
