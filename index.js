@@ -10,6 +10,7 @@ import {
   CancellationDetails } from "microsoft-cognitiveservices-speech-sdk";
 import { Configuration, OpenAIApi } from "openai";
 import FfmpegCommand  from 'fluent-ffmpeg';
+import fs from 'fs';
 
 // const { FfmpegCommand } = Ffmpeg;
 const ffmpeg = new FfmpegCommand();
