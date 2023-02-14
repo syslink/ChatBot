@@ -12,7 +12,6 @@ import FfmpegCommand  from 'fluent-ffmpeg';
 import fs from 'fs';
 
 // const { FfmpegCommand } = Ffmpeg;
-const ffmpeg = new FfmpegCommand();
 
 dotenv.config()
 
@@ -76,16 +75,19 @@ function synthesizeVoice(text, msg) {
     function (result) {
       if (result.reason === ResultReason.SynthesizingAudioCompleted) {
         console.log("synthesis finished.", fileName, ", duration=", result.audioDuration);
+        const ffmpeg = new FfmpegCommand();
         ffmpeg.input(fileName)
-            .output(outputFileName)
-            .on('end', function() {
-              console.log(fileName + ' => ' + outputFileName);
-              bot.sendVoice(chatId, outputFileName);
-            })
-            .on('error', function(err) {
-              console.error('ogg文件转换为wav格式失败：' + err.message);
-            })
-            .run(); 
+              .output(outputFileName)
+              .on('end', function() {
+                console.log(fileName + ' => ' + outputFileName);
+                bot.sendVoice(chatId, outputFileName);
+                //ffmpeg.ffmpegProc.kill();
+              })
+              .on('error', function(err) {
+                console.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
+                //ffmpeg.close();
+              })
+              .run(); 
       } else {
         console.error("Speech synthesis canceled, " + result.errorDetails +
             "\nDid you set the speech resource key and region values?");
@@ -124,14 +126,17 @@ bot.on('voice', msg => {
       const fileName = `./voiceFiles/${chatId}-${msgId}.ogg`;
       const outputFileName = `./voiceFiles/${chatId}-${msgId}.wav`;
       fs.renameSync(voicePath, fileName);
+      const ffmpeg = new FfmpegCommand();
       ffmpeg.input(fileName)
             .output(outputFileName)
             .on('end', function() {
               console.log('\n\n' + fileName + ' => ' + outputFileName);
               recognizeVoice(msg, outputFileName);
+              //ffmpeg.close();
             })
             .on('error', function(err) {
               console.error(fileName + ' =xx=> ' + outputFileName + err.message);
+              //ffmpeg.close();
             })
             .run();            
     });
