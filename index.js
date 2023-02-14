@@ -115,6 +115,7 @@ bot.on('voice', msg => {
     return;
   }
   lastMsgChatId = msgId;
+  console.log(msg);
   bot.getFileLink(fileId).then(fileLink => {
     // 下载语音文件
     bot.downloadFile(fileId, './').then(voicePath => {
@@ -124,11 +125,11 @@ bot.on('voice', msg => {
       ffmpeg.input(fileName)
             .output(outputFileName)
             .on('end', function() {
-              console.log('\n\n' + fileName + ' 成功转换为 ' + outputFileName);
+              console.log('\n\n' + fileName + ' => ' + outputFileName);
               recognizeVoice(msg, outputFileName);
             })
             .on('error', function(err) {
-              console.error('ogg文件转换为wav格式失败：' + err.message);
+              console.error(fileName + ' =xx=> ' + outputFileName + err.message);
             })
             .run();            
     });
@@ -181,7 +182,7 @@ async function getResponseFromOpenAI(msg, bVoice) {
     if (resText.indexOf("\n\n") > 0) {
         resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length);
     }
-    console.log(resText);
+    console.log(resText.trim());
     if (!bVoice)
       await bot.sendMessage(msg.chat.id, resText, { parse_mode: 'Markdown' });
     else {
