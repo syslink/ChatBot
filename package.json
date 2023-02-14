@@ -12,6 +12,8 @@
   "dependencies": {
     "chatgpt": "^4.2.0",
     "dotenv": "^16.0.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "microsoft-cognitiveservices-speech-sdk": "^1.25.1",
     "node-telegram-bot-api": "^0.61.0",
     "openai": "^3.1.0",
     "socks5-https-client": "^1.2.1"
