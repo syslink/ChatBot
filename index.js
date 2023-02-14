@@ -41,12 +41,15 @@ function recognizeVoice(msg, fileName) {
           case ResultReason.RecognizedSpeech:
               console.log(`RECOGNIZED Text = ${result.text}`);
               msg.text = result.text;
+              speechRecognizer.close();
               msgHandler(msg);
               break;
           case ResultReason.NoMatch:
+            speechRecognizer.close();
               console.log("NOMATCH: Speech could not be recognized.");
               break;
           case ResultReason.Canceled:
+              speechRecognizer.close();
               const cancellation = CancellationDetails.fromResult(result);
               console.log(`CANCELED: Reason=${cancellation.reason}`);
 
@@ -57,7 +60,6 @@ function recognizeVoice(msg, fileName) {
               }
               break;
       }
-      speechRecognizer.close();
       speechRecognizer = null;
   });
 }
