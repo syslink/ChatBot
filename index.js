@@ -80,7 +80,9 @@ function synthesizeVoice(text, msg) {
               .output(outputFileName)
               .on('end', function() {
                 console.log(fileName + ' => ' + outputFileName);
-                bot.sendVoice(chatId, outputFileName);
+                bot.sendMessage(chatId, resText, { parse_mode: 'Markdown' }).then(() => {
+                  bot.sendVoice(chatId, outputFileName);
+                })
                 //ffmpeg.ffmpegProc.kill();
               })
               .on('error', function(err) {
@@ -104,22 +106,16 @@ function synthesizeVoice(text, msg) {
 
 
 bot.on('text', async (msg) => {
-  console.log(new Date().toLocaleString(), '--Received message from id:', msg.chat.id, ':', msg.text);
+  console.log(new Date().toLocaleString(), '--Received message from id:', msg.chat.id, ':', msg.text);  
+  msg.type = 'text';
   await msgHandler(msg);
 });
-
-let lastMsgChatId = 0;
 
 bot.on('voice', msg => {
   const fileId = msg.voice.file_id;
   const chatId = msg.chat.id;
   const msgId = msg.message_id;
-  if (lastMsgChatId == msgId) {
-    console.log('same chat id', msgId)
-    return;
-  }
-  lastMsgChatId = msgId;
-  console.log(msg);
+  msg.type = 'voice';
   bot.getFileLink(fileId).then(fileLink => {
     // 下载语音文件
     bot.downloadFile(fileId, './').then(voicePath => {
@@ -144,7 +140,7 @@ bot.on('voice', msg => {
 });
 
 async function msgHandler(msg) {
-  if (typeof msg.text !== 'string' || ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && !msg.text.startsWith(prefix) && typeof msg.voice === undefined)) {  
+  if (typeof msg.text !== 'string' || ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && msg.type === 'text' && !msg.text.startsWith(prefix))) {  
     return;
   }
   switch (true) {
@@ -152,7 +148,7 @@ async function msgHandler(msg) {
       await bot.sendMessage(msg.chat.id, '👋您好！我是ChatGPT，很高兴能与您交谈？');
       break;
     case msg.text.length >= 2:
-      await chatGpt(msg, typeof msg.voice !== undefined);
+      await chatGpt(msg, msg.type === 'voice');
       break;
     default:
       await bot.sendMessage(msg.chat.id, '😭我不太明白您的意思。');
