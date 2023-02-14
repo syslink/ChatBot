@@ -80,7 +80,7 @@ function synthesizeVoice(text, msg) {
               .output(outputFileName)
               .on('end', function() {
                 console.log(fileName + ' => ' + outputFileName);
-                bot.sendMessage(chatId, resText, { parse_mode: 'Markdown' }).then(() => {
+                bot.sendMessage(chatId, text, { parse_mode: 'Markdown' }).then(() => {
                   bot.sendVoice(chatId, outputFileName);
                 })
                 //ffmpeg.ffmpegProc.kill();
