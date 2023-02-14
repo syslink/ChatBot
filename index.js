@@ -63,7 +63,8 @@ function recognizeVoice(msg, fileName) {
 }
 
 function synthesizeVoice(text, fileId) {
-  const fileName = `${fileId}-res.wav`;
+  const fileName = `./voiceFiles/${fileId}-res.wav`;
+  const outputFileName = `./voiceFiles/${fileId}-res.ogg`;
   const audioConfig = AudioConfig.fromAudioFileOutput(fileName);
   const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
 
@@ -72,10 +73,10 @@ function synthesizeVoice(text, fileId) {
       if (result.reason === ResultReason.SynthesizingAudioCompleted) {
         console.log("synthesis finished.");
         ffmpeg.input(fileName)
-            .output(`${fileId}-res.ogg`)
+            .output(outputFileName)
             .on('end', function() {
               console.log('wav文件转换为ogg格式成功！');
-              bot.sendVoice(fileId, `${fileId}-res.ogg`);
+              bot.sendVoice(fileId, outputFileName);
             })
             .on('error', function(err) {
               console.error('ogg文件转换为wav格式失败：' + err.message);
@@ -106,12 +107,14 @@ bot.on('voice', msg => {
   bot.getFileLink(fileId).then(fileLink => {
     // 下载语音文件
     bot.downloadFile(fileId, './').then(voicePath => {
-      fs.renameSync(voicePath, `${fileId}.ogg`);
+      const fileName = `./voiceFiles/${fileId}.ogg`;
+      const outputFileName = `./voiceFiles/${fileId}.wav`;
+      fs.renameSync(voicePath, fileName);
       ffmpeg.input(fileName)
-            .output(`${fileId}.wav`)
+            .output(outputFileName)
             .on('end', function() {
               console.log('ogg文件转换为wav格式成功！');
-              recognizeVoice(msg, `${fileId}.wav`);
+              recognizeVoice(msg, outputFileName);
             })
             .on('error', function(err) {
               console.error('ogg文件转换为wav格式失败：' + err.message);
@@ -164,10 +167,10 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
         prompt: msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text,
         max_tokens: bVoice ? 200 : 2000,
         top_p: 1,
-        stop: "###",
+        stop: "\n\n",
     }, { responseType: 'json' });
     clearInterval(intervalId);
-    console.log(res.data.choices[0].text);
+    console.log(res.data.choices[0]);
     if (!bVoice)
       await bot.editMessageText(res.data.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
     else {
