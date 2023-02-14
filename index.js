@@ -187,7 +187,7 @@ async function getResponseFromOpenAI(msg, bVoice) {
     }
     console.log(resText.trim());
     if (!bVoice)
-      await bot.sendMessage(msg.chat.id, resText, { parse_mode: 'Markdown' });
+      await bot.sendMessage(msg.chat.id, resText);
     else {
       synthesizeVoice(resText, msg);
     }
