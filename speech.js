@@ -166,7 +166,7 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
     const res = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text,
-        max_tokens: bVoice ? 200 : 2000,
+        max_tokens: bVoice ? 200 : 1000,
         top_p: 1,
         stop: "###",
     }, { responseType: 'json' });
