@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv'
-import TelegramBot from 'node-telegram-bot-api'
 import { 
   SpeechConfig, 
   AudioConfig, 
@@ -7,16 +6,14 @@ import {
   SpeechSynthesizer, 
   ResultReason, 
   CancellationDetails } from "microsoft-cognitiveservices-speech-sdk";
-import { Configuration, OpenAIApi } from "openai";
 import FfmpegCommand  from 'fluent-ffmpeg';
 import fs from 'fs';
 
 // const { FfmpegCommand } = Ffmpeg;
 const ffmpeg = new FfmpegCommand();
-
 dotenv.config()
 
-const { textbot_token, speakbot_token, apiKey, speechAPIKey, group_name, SPEECH_KEY, SPEECH_REGION } = process.env
+const { speakbot_token, apiKey, group_name, SPEECH_KEY, SPEECH_REGION } = process.env
 const prefix = group_name ? '/' + group_name : '/gpt'
 const bot = new TelegramBot(speakbot_token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
@@ -171,23 +168,28 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
         prompt: msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text,
         max_tokens: bVoice ? 200 : 2000,
         top_p: 1,
-        stop: "\n\n",
+        stop: "###",
     }, { responseType: 'json' });
+    let resText = res.data.choices[0].text;
+    console.log(resText);
     clearInterval(intervalId);
-    console.log(res.data.choices[0]);
+    if (resText.indexOf("\n\n") > 0) {
+        resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length);
+    }
     if (!bVoice)
-      await bot.editMessageText(res.data.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
+      await bot.editMessageText(resText, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
     else {
-      synthesizeVoice(res.data.choices[0].text, msg);
+      synthesizeVoice(resText, msg);
     }
     return;
   } catch (error) {
       clearInterval(intervalId);
       if (error.response?.status) {
-          console.error(error.response.status, error.message);          
+          console.error(error.response.status, error.message);    
+          await bot.sendMessage(msg.chat.id, '😭被限速了，请稍后再试，错误代码: ' + error.response.status);      
       } else {
           console.error('An error occurred during OpenAI request', error);
+          await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试');
       }
-      await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试');
   }
 }
