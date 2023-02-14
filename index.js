@@ -6,7 +6,6 @@ import {
   SpeechRecognizer, 
   SpeechSynthesizer, 
   ResultReason, 
-  SpeechSynthesisOutputFormat, 
   CancellationDetails } from "microsoft-cognitiveservices-speech-sdk";
 import { Configuration, OpenAIApi } from "openai";
 import FfmpegCommand  from 'fluent-ffmpeg';
@@ -23,7 +22,7 @@ const bot = new TelegramBot(speakbot_token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
 
 const configuration = new Configuration({
-  speechAPIKey,
+  apiKey,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -62,21 +61,23 @@ function recognizeVoice(msg, fileName) {
   });
 }
 
-function synthesizeVoice(text, fileId) {
-  const fileName = `./voiceFiles/${fileId}-res.wav`;
-  const outputFileName = `./voiceFiles/${fileId}-res.ogg`;
+function synthesizeVoice(text, msg) {
+  const chatId = msg.chat.id;
+  const msgId = msg.message_id;
+  const fileName = `./voiceFiles/${chatId}-${msgId}-res.wav`;
+  const outputFileName = `./voiceFiles/${chatId}-${msgId}-res.ogg`;
   const audioConfig = AudioConfig.fromAudioFileOutput(fileName);
   const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
 
   synthesizer.speakTextAsync(text,
     function (result) {
       if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-        console.log("synthesis finished.");
+        console.log("synthesis finished.", fileName, ", duration=", result.audioDuration);
         ffmpeg.input(fileName)
             .output(outputFileName)
             .on('end', function() {
               console.log('wav文件转换为ogg格式成功！');
-              bot.sendVoice(fileId, outputFileName);
+              bot.sendVoice(chatId, outputFileName);
             })
             .on('error', function(err) {
               console.error('ogg文件转换为wav格式失败：' + err.message);
@@ -86,13 +87,9 @@ function synthesizeVoice(text, fileId) {
         console.error("Speech synthesis canceled, " + result.errorDetails +
             "\nDid you set the speech resource key and region values?");
       }
-      synthesizer.close();
-      synthesizer = null;
     },
     function (err) {
       console.trace("err - " + err);
-      synthesizer.close();
-      synthesizer = null;
     });
 }
 
@@ -104,11 +101,13 @@ bot.on('text', async (msg) => {
 
 bot.on('voice', msg => {
   const fileId = msg.voice.file_id;
+  const chatId = msg.chat.id;
+  const msgId = msg.message_id;
   bot.getFileLink(fileId).then(fileLink => {
     // 下载语音文件
     bot.downloadFile(fileId, './').then(voicePath => {
-      const fileName = `./voiceFiles/${fileId}.ogg`;
-      const outputFileName = `./voiceFiles/${fileId}.wav`;
+      const fileName = `./voiceFiles/${chatId}-${msgId}.ogg`;
+      const outputFileName = `./voiceFiles/${chatId}-${msgId}.wav`;
       fs.renameSync(voicePath, fileName);
       ffmpeg.input(fileName)
             .output(outputFileName)
@@ -174,7 +173,7 @@ async function getResponseFromOpenAI(msg, tempId, bVoice) {
     if (!bVoice)
       await bot.editMessageText(res.data.choices[0].text, { parse_mode: 'Markdown', chat_id: msg.chat.id, message_id: tempId });
     else {
-      synthesizeVoice(res.data.choices[0].text, msg.chat.id);
+      synthesizeVoice(res.data.choices[0].text, msg);
     }
     return;
   } catch (error) {
