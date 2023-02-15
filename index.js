@@ -63,7 +63,7 @@ function recognizeVoice(msg, fileName) {
   });
 }
 
-function synthesizeVoice(text, msg) {
+function synthesizeVoice(prompt, completion, msg) {
   const chatId = msg.chat.id;
   const msgId = msg.message_id;
   const fileName = `./voiceFiles/${chatId}-${msgId}-res.wav`;
@@ -71,7 +71,7 @@ function synthesizeVoice(text, msg) {
   const audioConfig = AudioConfig.fromAudioFileOutput(fileName);
   let synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
 
-  synthesizer.speakTextAsync(text,
+  synthesizer.speakTextAsync(completion,
     function (result) {
       if (result.reason === ResultReason.SynthesizingAudioCompleted) {
         console.log("synthesis finished.", fileName, ", duration=", result.audioDuration);
@@ -80,7 +80,8 @@ function synthesizeVoice(text, msg) {
               .output(outputFileName)
               .on('end', function() {
                 console.log(fileName + ' => ' + outputFileName);
-                bot.sendMessage(chatId, text, { parse_mode: 'Markdown' }).then(() => {
+                const response = 'You: ' + prompt + '\n\nChatGPT: ' + response;
+                bot.sendMessage(chatId, response, { parse_mode: 'Markdown' }).then(() => {
                   bot.sendVoice(chatId, outputFileName);
                 })
                 //ffmpeg.ffmpegProc.kill();
@@ -171,11 +172,12 @@ async function getResponseFromOpenAI(msg, bVoice) {
   try {
     bot.sendChatAction(msg.chat.id, 'typing');
     intervalId = setInterval(() => {
-        bot.sendChatAction(msg.chat.id, 'typing');
+        bot.sendChatAction(msg.chat.id, bVoice ? 'record_voice' : 'typing');
     }, 5000);
+    const prompt = msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text;
     const res = await openai.createCompletion({
         model: gptModel,
-        prompt: msg.text.startsWith(prefix) ? msg.text.replace(prefix, '') : msg.text,
+        prompt,
         max_tokens: bVoice ? 200 : 1000,
         top_p: 1,
         stop: "###",
@@ -189,7 +191,7 @@ async function getResponseFromOpenAI(msg, bVoice) {
     if (!bVoice)
       await bot.sendMessage(msg.chat.id, resText);
     else {
-      synthesizeVoice(resText, msg);
+      synthesizeVoice(prompt, resText, msg);
     }
     return;
   } catch (error) {
