@@ -80,7 +80,7 @@ function synthesizeVoice(prompt, completion, msg) {
               .output(outputFileName)
               .on('end', function() {
                 console.log(fileName + ' => ' + outputFileName);
-                const response = 'You: ' + prompt + '\n\nChatGPT: ' + response;
+                const response = 'You: ' + prompt + '\n\nChatGPT: ' + completion;
                 bot.sendMessage(chatId, response, { parse_mode: 'Markdown' }).then(() => {
                   bot.sendVoice(chatId, outputFileName);
                 })
