@@ -16,6 +16,7 @@
     "microsoft-cognitiveservices-speech-sdk": "^1.25.1",
     "node-telegram-bot-api": "^0.61.0",
     "openai": "^3.1.0",
-    "socks5-https-client": "^1.2.1"
+    "socks5-https-client": "^1.2.1",
+    "web3": "^1.8.2"
   }
 }

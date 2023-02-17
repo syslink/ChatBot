@@ -10,15 +10,18 @@ import {
 import { Configuration, OpenAIApi } from "openai";
 import FfmpegCommand  from 'fluent-ffmpeg';
 import fs from 'fs';
+import {sign, checkVip} from './web3Auth';
 
 // const { FfmpegCommand } = Ffmpeg;
 
 dotenv.config()
 
-const { textbot_token, speakbot_token, apiKey, gptModel, group_name, SPEECH_KEY, SPEECH_REGION } = process.env
+const { max_tokens, speakbot_token, apiKey, gptModel, group_name, SPEECH_KEY, SPEECH_REGION, maxEnglishDialogNumber } = process.env
 const prefix = group_name ? '/' + group_name : '/gpt'
 const bot = new TelegramBot(speakbot_token, { polling: true});
 console.log(new Date().toLocaleString(), '--Bot has been started...');
+const userStat = {}
+const startVip = false;
 
 const configuration = new Configuration({
   apiKey,
@@ -112,7 +115,32 @@ bot.on('text', async (msg) => {
   await msgHandler(msg);
 });
 
-bot.on('voice', msg => {
+async function checkUserValid(msg) {
+  if (userStat[msg.from.id] !== undefined && userStat[msg.from.id].bVip) return true;
+
+  if (userStat[msg.from.id] === undefined) {
+    userStat[msg.from.id] = {bVip: false, voiceNum: 1};
+    return true;
+  }
+  if (startVip) {
+    if (userStat[msg.from.id].voiceNum >= maxEnglishDialogNumber) {
+      const bVip = await checkVip(msg.from.id);
+      userStat[msg.from.id].bVip = bVip;
+      if (!bVip) {
+        return false;
+      }
+    }
+  }
+
+  userStat[msg.from.id]++;
+  return true;
+}
+
+bot.on('voice', async (msg) => {
+  if (!checkUserValid(msg)) {
+    await bot.sendMessage(msg.chat.id, '对不起，如果您希望继续同我进行英语对话，请登录网站');
+    return;
+  }
   const fileId = msg.voice.file_id;
   const chatId = msg.chat.id;
   const msgId = msg.message_id;
@@ -148,6 +176,11 @@ async function msgHandler(msg) {
     case msg.text.startsWith('/start'):
       await bot.sendMessage(msg.chat.id, '👋您好！我是ChatGPT，很高兴能与您交谈？');
       break;
+    case msg.text.startsWith('/verify'):
+      const signature = sign(msg.from.id, msg.text.substr('/verify '));
+      console.log(signature);
+      await bot.sendMessage(msg.chat.id, JSON.stringify(signature));
+      break;
     case msg.text.length >= 2:
       await chatGpt(msg, msg.type === 'voice');
       break;
@@ -178,7 +211,7 @@ async function getResponseFromOpenAI(msg, bVoice) {
     const res = await openai.createCompletion({
         model: gptModel,
         prompt,
-        max_tokens: bVoice ? 200 : 1000,
+        max_tokens,
         top_p: 1,
         stop: "###",
     }, { responseType: 'json' });
