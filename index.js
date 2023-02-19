@@ -176,7 +176,7 @@ async function msgHandler(msg) {
       await bot.sendMessage(msg.chat.id, '👋您好！我是ChatGPT，很高兴能与您交谈？');
       break;
     case msg.text.startsWith('/verify'):
-      const signature = sign(msg.from.id, msg.text.substr('/verify '));
+      const signature = sign(msg.from.id, msg.text.substr('/verify '.length));
       console.log(signature);
       await bot.sendMessage(msg.chat.id, JSON.stringify(signature));
       break;
