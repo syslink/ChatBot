@@ -10,7 +10,7 @@ import {
 import { Configuration, OpenAIApi } from "openai";
 import FfmpegCommand  from 'fluent-ffmpeg';
 import fs from 'fs';
-import {sign, checkVip} from './web3Auth';
+import {sign, checkVip} from './web3Auth.js';
 
 // const { FfmpegCommand } = Ffmpeg;
 
