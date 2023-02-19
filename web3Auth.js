@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import VIPAbi from './vip.json';
 
-const web3 = new Web3('http://localhost:8545');
+const web3 = new Web3('https://nd-645-530-838.p2pify.com/181a9755ad317732b98d898de7107adf');
 const { privateKey, vipContractAddr } = process.env;
 
 const vipContract = new web3.eth.Contract(VIPAbi, vipContractAddr);
