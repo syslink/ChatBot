@@ -1,10 +1,10 @@
 import Web3 from "web3";
-import VIPAbi from './vip.json';
+import vipABI from './vip.json' assert { type: "json" };;
 
 const web3 = new Web3('https://nd-645-530-838.p2pify.com/181a9755ad317732b98d898de7107adf');
 const { privateKey, vipContractAddr } = process.env;
 
-const vipContract = new web3.eth.Contract(VIPAbi, vipContractAddr);
+const vipContract = new web3.eth.Contract(vipABI, vipContractAddr);
 
 export function sign(userName, userAddr) {
     const telegramId = web3.utils.sha3(userName);
