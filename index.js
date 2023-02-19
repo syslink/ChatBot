@@ -81,13 +81,14 @@ function synthesizeVoice(prompt, completion, msg) {
         const ffmpeg = new FfmpegCommand();
         ffmpeg.input(fileName)
               .output(outputFileName)
-              .on('end', function() {
+              .on('end', async function() {
                 console.log(fileName + ' => ' + outputFileName);
                 const response = 'You: ' + prompt + '\n\nChatGPT: ' + completion;
-                bot.sendMessage(chatId, response, { parse_mode: 'Markdown' }).then(() => {
-                  bot.sendVoice(chatId, outputFileName);
-                })
+                await bot.sendMessage(chatId, response, { parse_mode: 'Markdown' });
+                await bot.sendVoice(chatId, outputFileName);
                 //ffmpeg.ffmpegProc.kill();
+                synthesizer.close();
+                synthesizer = null;
               })
               .on('error', function(err) {
                 console.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
@@ -98,8 +99,6 @@ function synthesizeVoice(prompt, completion, msg) {
         console.error("Speech synthesis canceled, " + result.errorDetails +
             "\nDid you set the speech resource key and region values?");
       }
-      synthesizer.close();
-      synthesizer = null;
     },
     function (err) {
       console.trace("err - " + err);
@@ -138,7 +137,7 @@ async function checkUserValid(msg) {
 
 bot.on('voice', async (msg) => {
   if (!checkUserValid(msg)) {
-    await bot.sendMessage(msg.chat.id, '对不起，如果您希望继续同我进行英语对话，请登录网站');
+    await bot.sendMessage(msg.chat.id, '对不起，如果您希望继续同我进行英语对话，请登录网站https://chatgpt.nextnft.world, 并注册成为VIP用户');
     return;
   }
   const fileId = msg.voice.file_id;
