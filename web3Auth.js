@@ -10,6 +10,7 @@ export function sign(userName, userAddr) {
     const telegramId = web3.utils.sha3(userName + '');
     const messageHash =  web3.utils.sha3(telegramId + userAddr);
     const signature = web3.eth.accounts.sign(messageHash, privateKey);
+    signature.telegramId = telegramId;
     return signature;
 }
 
