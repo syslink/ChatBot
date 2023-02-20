@@ -18,7 +18,9 @@ const vipContract = new web3.eth.Contract(vipABI, vipContractAddr);
     }
 */
 export function sign(userName, userAddr) {
-    const telegramId = web3.utils.sha3(userName);
+    const buf = Buffer.from('' + userName, 'utf8');
+    const hex = '0x' + buf.toString('hex');
+    const telegramId = web3.utils.sha3(hex);
     const encoded = abi.solidityPack(['bytes32', 'address'], [telegramId, userAddr]).toString('hex');
     let messageHash = web3.utils.soliditySha3('0x' + encoded);
     const signature = web3.eth.accounts.sign(messageHash, privateKey);
@@ -27,7 +29,9 @@ export function sign(userName, userAddr) {
 }
 
 export async function checkVip(userName) {
-    const telegramId = web3.utils.sha3(userName);
+    const buf = Buffer.from('' + userName, 'utf8');
+    const hex = '0x' + buf.toString('hex');
+    const telegramId = web3.utils.sha3(hex);
     try {        
         let result = await vipContract.methods.telegramId2TokenIdMap(telegramId).call();
         console.log(result);
@@ -43,9 +47,9 @@ export async function checkVip(userName) {
     }
 }
 
-// const buf = Buffer.from('100', 'utf8');
-// const hex = buf.toString('hex');
-// console.log(hex);
+const buf = Buffer.from('100', 'utf8');
+const hex = buf.toString('hex');
+console.log(hex);
 
 // console.log(web3.utils.sha3('100'));
 
