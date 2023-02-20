@@ -87,8 +87,6 @@ function synthesizeVoice(prompt, completion, msg) {
                 await bot.sendMessage(chatId, response, { parse_mode: 'Markdown' });
                 await bot.sendVoice(chatId, outputFileName);
                 //ffmpeg.ffmpegProc.kill();
-                synthesizer.close();
-                synthesizer = null;
               })
               .on('error', function(err) {
                 console.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
@@ -99,6 +97,8 @@ function synthesizeVoice(prompt, completion, msg) {
         console.error("Speech synthesis canceled, " + result.errorDetails +
             "\nDid you set the speech resource key and region values?");
       }
+      synthesizer.close();
+      synthesizer = null;
     },
     function (err) {
       console.trace("err - " + err);
