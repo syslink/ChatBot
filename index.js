@@ -239,7 +239,6 @@ async function chatGpt(msg, bVoice) {
   } catch (err) {
     logger.error('Error:', err)
     await bot.sendMessage(msg.chat.id, '😭出错了，请稍后再试；如果您是管理员，请检查日志。');
-    throw err
   }
 }
 
