@@ -10,17 +10,15 @@ const { privateKey, vipContractAddr } = process.env;
 
 const vipContract = new web3.eth.Contract(vipABI, vipContractAddr);
 
-/*
-    function bytes32BindTelegramAndUser(address chatbotAddr, bytes32 telegramId, uint8 v, bytes32 r, bytes32 s) external view returns(bool) {
-        bytes32 messageHash = keccak256(abi.encodePacked(telegramId, msg.sender));
-        address signer = messageHash.recover(v, r, s);
-        return signer == chatbotAddr;
-    }
-*/
-export function sign(userName, userAddr) {
+export function getTelegramId(userName) {
     const buf = Buffer.from('' + userName, 'utf8');
     const hex = '0x' + buf.toString('hex');
     const telegramId = web3.utils.sha3(hex);
+    return telegramId;
+}
+
+export function sign(userName, userAddr) {
+    const telegramId = getTelegramId(userName);
     const encoded = abi.solidityPack(['bytes32', 'address'], [telegramId, userAddr]).toString('hex');
     let messageHash = web3.utils.soliditySha3('0x' + encoded);
     const signature = web3.eth.accounts.sign(messageHash, privateKey);
@@ -35,7 +33,8 @@ export async function checkVip(userName) {
     try {        
         let result = await vipContract.methods.telegramId2TokenIdMap(telegramId).call();
         console.log(result);
-        const tokenId = result.tokenId;
+        const tokenId = result;
+        if (tokenId == 0) return false;
         result = await vipContract.methods.userRechargeInfos(tokenId).call();
         if (result.endTime > new Date().getTime() / 1000 && telegramId == result.telegramId) {
             return true;
@@ -47,9 +46,9 @@ export async function checkVip(userName) {
     }
 }
 
-const buf = Buffer.from('100', 'utf8');
-const hex = buf.toString('hex');
-console.log(hex);
+// const buf = Buffer.from('100', 'utf8');
+// const hex = buf.toString('hex');
+// console.log(hex);
 
 // console.log(web3.utils.sha3('100'));
 
@@ -61,9 +60,9 @@ console.log(hex);
 
 // console.log(web3.eth.accounts.privateKeyToAccount(privateKey).address);
 
-const signature = sign('0x313030', "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4");
+// const signature = sign('0x313030', "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4");
 
-console.log(signature);
+// console.log(signature);
 
 // const buf = Buffer.from("\x19Ethereum Signed Message:\n32", 'utf8');
 // const hex = '0x' + buf.toString('hex');
