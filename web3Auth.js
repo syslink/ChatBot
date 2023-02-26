@@ -22,12 +22,12 @@ export function sign(userName, userAddr) {
     const encoded = abi.solidityPack(['bytes32', 'address'], [telegramId, userAddr]).toString('hex');
     let messageHash = web3.utils.soliditySha3('0x' + encoded);
     const signature = web3.eth.accounts.sign(messageHash, privateKey);
-    const result = {messageHash, telegramId, v: signature.v, s: signature.s, r: signature.r}
+    const result = {telegramId, v: signature.v, s: signature.s, r: signature.r}
     return result;
 }
 
-export async function checkVip(userName) {
-    const buf = Buffer.from('' + userName, 'utf8');
+export async function checkVip(userId) {
+    const buf = Buffer.from('' + userId, 'utf8');
     const hex = '0x' + buf.toString('hex');
     const telegramId = web3.utils.sha3(hex);
     try {        

@@ -1,0 +1,37 @@
+{
+    "英语": {
+      "recognition": "en-US",
+      "synthesisLanguage": "en-US",
+      "synthesisVoiceName": "en-US-JennyNeural"
+    },
+    "德语": {
+      "recognition": "de-DE",
+      "synthesisLanguage": "de-DE",
+      "synthesisVoiceName": "de-DE-AmalaNeural"
+    },
+    "西班牙语": {
+      "recognition": "es-ES",
+      "synthesisLanguage": "es-ES",
+      "synthesisVoiceName": "es-ES-AbrilNeural"
+    },
+    "法语": {
+      "recognition": "fr-FR",
+      "synthesisLanguage": "fr-FR",
+      "synthesisVoiceName": "fr-FR-AlainNeural"
+    },
+    "日语": {
+      "recognition": "ja-JP",
+      "synthesisLanguage": "ja-JP",
+      "synthesisVoiceName": "fr-FR-AlainNeural"
+    },
+    "韩语": {
+      "recognition": "ko-KR",
+      "synthesisLanguage": "ko-KR",
+      "synthesisVoiceName": "ko-KR-BongJinNeural"
+    },
+    "中文": {
+      "recognition": "zh-CN",
+      "synthesisLanguage": "zh-CN",
+      "synthesisVoiceName": "zh-CN-XiaoxiaoNeural"
+    }
+  }
