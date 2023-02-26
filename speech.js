@@ -1,4 +1,5 @@
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
+import log4js from 'log4js';
 import { 
   SpeechConfig, 
   AudioConfig, 
@@ -9,33 +10,32 @@ import {
 import FfmpegCommand  from 'fluent-ffmpeg';
 import fs from 'fs';
 import { getTelegramId } from './web3Auth.js';
-import Languages from './languages.json';
+import Languages from './languages.json' assert { type: "json" };
 
 export class SpeechWrapper {
-  constructor(groupName, telegramBot, openAI, SPEECH_KEY, SPEECH_REGION, mongodb, logger) {
+  constructor(telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger) {
     this.ffmpeg = new FfmpegCommand();
-    this.prefix = groupName ? '/' + groupName : '/gpt'
     this.telegramBot = telegramBot;
-    this.openAI = openAI;
     this.mongodb = mongodb;
     this.logger = logger;
 
     this.speechDefaultConfig = SpeechConfig.fromSubscription(SPEECH_KEY, SPEECH_REGION);
-    speechDefaultConfig.speechRecognitionLanguage = "en-US";
-    speechDefaultConfig.speechSynthesisLanguage = 'en-US';
-    speechDefaultConfig.speechSynthesisVoiceName = "en-US-JennyNeural"; 
+    this.speechDefaultConfig.speechRecognitionLanguage = "en-US";
+    this.speechDefaultConfig.speechSynthesisLanguage = 'en-US';
+    this.speechDefaultConfig.speechSynthesisVoiceName = "en-US-JennyNeural"; 
 
     this.userLanaguageSet = {}
   }
 
-  setLanguage(userId, language) {
+  async setLanguage(userId, language) {
     if (Languages[language] != undefined) {
       const userSpeechConfig = {};
       userSpeechConfig.speechRecognitionLanguage = Languages[language]['recognition'];
       userSpeechConfig.speechSynthesisLanguage =  Languages[language]['synthesisLanguage'];
       userSpeechConfig.speechSynthesisVoiceName = Languages[language]['synthesisVoiceName'];
       this.userLanaguageSet[userId] = userSpeechConfig;
-      this.mongodb.insertOrUpdateLanguageSetting(getTelegramId(userId), userSpeechConfig);
+      if (this.mongodb != null)
+        await this.mongodb.insertOrUpdateLanguageSetting(getTelegramId(userId), userSpeechConfig);
     }
   }
 
@@ -54,7 +54,8 @@ export class SpeechWrapper {
                 this.logger.debug(`RECOGNIZED Text = ${result.text}`);
                 msg.text = result.text;
                 speechRecognizer.close();
-                this.telegramBot.msgHandler(msg);
+                if (this.telegramBot != null)
+                  this.telegramBot.msgHandler(msg);
                 break;
             case ResultReason.NoMatch:
                 speechRecognizer.close();
@@ -89,20 +90,25 @@ export class SpeechWrapper {
       curSpeecConfig.speechSynthesisVoiceName = tmpLanguageType['synthesisVoiceName'];
     }
     let synthesizer = new SpeechSynthesizer(curSpeecConfig, audioConfig);
-  
+    console.log("start synthesis voice");
     synthesizer.speakTextAsync(completion,
       function (result) {
+        console.log(result);
         if (result.reason === ResultReason.SynthesizingAudioCompleted) {
+          console.log("synthesis finished, start to convert wav => ogg");
           this.logger.debug("synthesis finished.", fileName, ", duration=", result.audioDuration);
           const ffmpeg = new FfmpegCommand();
           ffmpeg.input(fileName)
                 .output(outputFileName)
                 .on('end', async function() {
                   this.logger.debug(fileName + ' => ' + outputFileName);
-                  const response = 'You: ' + prompt + '\n\nChatGPT: ' + completion;
-                  await this.telegramBot.sendMessage(chatId, response, { parse_mode: 'Markdown' });
-                  await this.telegramBot.sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
-                  await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, curSpeecConfig.speechRecognitionLanguage);
+                  const response = 'You: ' + prompt + '\n\nChatGPT: ' + completion;                  
+                  if (this.telegramBot != null) {
+                    await this.telegramBot.getNativeBot().sendMessage(chatId, response, { parse_mode: 'Markdown' });
+                    await this.telegramBot.getNativeBot().sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
+                  }
+                  if (this.mongodb != null) 
+                    await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, curSpeecConfig.speechRecognitionLanguage);
                 })
                 .on('error', function(err) {
                   this.logger.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
@@ -122,3 +128,36 @@ export class SpeechWrapper {
       });
   }
 }
+
+const test = async () => {
+  dotenv.config();
+  log4js.configure({
+    appenders: { chatbot: { type: "file", filename: "chatbot.log" } },
+    categories: { default: { appenders: ["chatbot"], level: "debug" } },
+  });
+  var logger = log4js.getLogger("chatbot");
+
+  const { SPEECH_KEY, SPEECH_REGION } = process.env;
+  console.log(SPEECH_KEY, SPEECH_REGION);
+  const speech = new SpeechWrapper(null, SPEECH_KEY, SPEECH_REGION, null, logger);
+  speech.setLanguage('111', "法语");
+  console.log(speech.getLanguageSetting('111'));
+
+  const fileName = './voiceFiles/2-3-res.wav';
+  const msg = {
+    from: {id: 1},
+    chat: {id: 2},
+    message_id: 3
+  }
+  fs.access(fileName, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.log('File does not exist');      
+      speech.synthesizeVoice('hello', 'what can i do for you?', msg, '英语');
+    } else {
+      console.log('File exists');
+      speech.recognizeVoice(msg, fileName);
+    }
+  });
+}
+
+//test();

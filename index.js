@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv'
 import log4js from 'log4js';
-import { TelegramBot } from './telegramBot.js';
+import { TelegramChatBot } from './telegramBot.js';
 import { OpenAI } from './openAI.js';
 import { Database } from './database.js';
 import { VIP } from './vip.js';
@@ -14,7 +14,7 @@ log4js.configure({
 });
 var logger = log4js.getLogger("chatbot");
 
-const { mongodbUrl, speakbot_token, apiKey, gptModel, group_name, SPEECH_KEY, SPEECH_REGION, maxVoiceDialogNumber } = process.env
+const { mongodbUrl, speakbot_token, apiKey, gptModel, groupPrefix, SPEECH_KEY, SPEECH_REGION, maxVoiceDialogNumber } = process.env
 
 const mongodb = new Database(mongodbUrl);
 await mongodb.init();
@@ -22,8 +22,8 @@ await mongodb.init();
 const vip = new VIP();
 const openAI = new OpenAI(apiKey, gptModel, logger);
 
-const telegramBot = new TelegramBot(speakbot_token, mongodb, maxVoiceDialogNumber, true, vip, speech, openAI, logger);
-const speech = new SpeechWrapper('/gpt', telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger);
+const telegramBot = new TelegramChatBot(speakbot_token, mongodb, maxVoiceDialogNumber, true, vip, openAI, groupPrefix, logger);
+const speech = new SpeechWrapper(telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger);
 telegramBot.startListen(speech);
 
 

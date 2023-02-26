@@ -2,9 +2,10 @@ import TelegramBot from 'node-telegram-bot-api';
 import { getTelegramId, sign } from './web3Auth.js';
 import FfmpegCommand  from 'fluent-ffmpeg';
 
-export class TelegramBot {
-    constructor(speakbot_token, mongodb, maxVoiceDialogNumber, bStartVip, vip, openAI, logger) {
+export class TelegramChatBot {
+    constructor(speakbot_token, mongodb, maxVoiceDialogNumber, bStartVip, vip, openAI, groupPrefix, logger) {
         this.bot = new TelegramBot(speakbot_token, { polling: true});
+        this.logger = logger;
         this.logger.info(new Date().toLocaleString(), '--Bot has been started...');
         this.userInited = {};
         this.userDialogCount = {};
@@ -13,6 +14,11 @@ export class TelegramBot {
         this.bStartVip = bStartVip;
         this.vip = vip;
         this.openAI = openAI;
+        this.groupPrefix = groupPrefix;
+    }
+
+    getNativeBot() {
+        return this.bot;
     }
 
     async startListen(speech) {
@@ -94,7 +100,8 @@ export class TelegramBot {
     }
 
     async msgHandler(msg) {
-        if (typeof msg.text !== 'string' || ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && msg.type === 'text' && !msg.text.startsWith(prefix))) {  
+        if (typeof msg.text !== 'string' || 
+            ((msg.chat.type === 'group' || msg.chat.type === 'supergroup') && msg.type === 'text' && !msg.text.startsWith(this.groupPrefix))) {  
           return;
         }
         switch (true) {
@@ -103,8 +110,8 @@ export class TelegramBot {
               '👋您好！我是搭载ChatGPT内核的聊天机器人，您可以同我文字交谈，也可以跟我进行多国语言口语对话，\
               目前支持的语言包括：中文、英语、西班牙语、德语、法语、日语以及韩语，默认的口语对话为英语');
             await this.bot.sendMessage(msg.chat.id, 
-                '如果需要切换到其它语言对话，如西班牙语，需要向我发送命令：/setLanguage 西班牙语，或者切换到中文: /setLanguage 中文\
-                只有当我确认后，才可以通过此语言对话哦');
+                '当需要切换到其它语言进行口语对话时，可向我发送命令：/setLanguage 西班牙语，或者: /setLanguage 中文，\
+                即可切换到西班牙语或中文进行对话');
             await this.bot.sendMessage(msg.chat.id, 
               '除此之外，如果您需要我将文本翻译为其它语言并让我朗读出来，请按此格式给我发送文本信息：翻译为英语：xxx, 翻译为法语：xxx');
             break;
@@ -114,7 +121,7 @@ export class TelegramBot {
             await this.bot.sendMessage(msg.chat.id, JSON.stringify(signature));
             break;
           case msg.text.startsWith('/setLanguage'):
-            this.speech.setLanguage(msg.from.id, msg.text.substr('/setLanguage'.length).trim());
+            await this.speech.setLanguage(msg.from.id, msg.text.substr('/setLanguage'.length).trim());
             await this.bot.sendMessage(msg.chat.id, "已设置成功，可以开始" + msg.text.substr('/setLanguage'.length).trim() + "对话");
             break;
           case msg.text.length >= 2:
@@ -133,7 +140,7 @@ export class TelegramBot {
           intervalId = setInterval(() => {
               this.bot.sendChatAction(msg.chat.id, bVoice ? 'record_voice' : 'typing');
           }, 5000);
-          const prompt = msg.text.startsWith(prefix) ? msg.text.replace(prefix, '').trim() : msg.text.trim();
+          const prompt = msg.text.startsWith(this.groupPrefix) ? msg.text.replace(this.groupPrefix, '').trim() : msg.text.trim();
           const resText = await this.openAI.getResponse(prompt, bVoice ? 200 : 500);
           clearInterval(intervalId);
           
