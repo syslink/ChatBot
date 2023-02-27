@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { getCurDate, getWeekNumber } from './utils.js';
+import { getCurDate, getWeek, getMonth } from './utils.js';
 import * as dotenv from 'dotenv';
 
 export class Database {
@@ -17,7 +17,10 @@ export class Database {
     }
     async insertDialog(telegramId, prompt, completion, language) {
         const today = new Date();
-        await this.dialogCol.insertOne({telegramId, prompt, completion, language, date: getCurDate(today), week: today.getFullYear() + '-' + getWeekNumber(today)});
+        await this.dialogCol.insertOne({telegramId, prompt, completion, language, 
+                                        date: getCurDate(today), 
+                                        week: getWeek(today),
+                                        month: getMonth(today)});
     }
 
     async insertOrUpdateLanguageSetting(telegramId, languageSetting) {
@@ -39,8 +42,23 @@ export class Database {
     }   
     
     async getAllDataOfOneWeek(date) {
-        const week = date.getFullYear() + '-' + getWeekNumber(date)
+        const week = getWeek(today);
         const cursor = await this.dialogCol.find({week});
+        const result = await cursor.toArray();
+        return result;
+    }
+
+    async getSomeOneDataOfOneMonth(telegramId, date) {
+        const curMonth = getMonth(date);
+        const cursor = await this.dialogCol.find({telegramId, month: curMonth});
+        const result = await cursor.toArray();
+        return result;
+    }
+
+    async getSomeOneDataOfTwoMonths(telegramId, date) {
+        const curMonth = getMonth(date);
+        const lastMonth = getMonth(new Date(date.getTime() - 3600 * 24 * 30 * 1000));
+        const cursor = await this.dialogCol.find({telegramId, $or: [{month: curMonth}, {month: lastMonth}]});
         const result = await cursor.toArray();
         return result;
     }

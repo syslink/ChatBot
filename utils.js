@@ -10,3 +10,11 @@ export function getWeekNumber(today) {
     const weekNo = Math.ceil((((today - yearStart) / 86400000) + 1) / 7);
     return weekNo;
 }
+
+export function getWeek(date) {
+    return date.getFullYear() + '-' + getWeekNumber(date);
+}
+
+export function getMonth(date) {
+    return today.getFullYear() + '-' + today.getMonth();
+}
