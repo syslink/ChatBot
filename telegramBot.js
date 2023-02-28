@@ -69,6 +69,7 @@ export class TelegramChatBot {
             let bPass = await this.checkUserValid(msg);
             if (!bPass) {
               await this.bot.sendMessage(msg.chat.id, `对不起，您已经达到每天口语对话${maxVoiceDialogNumber}条的上限，如需继续，请登录网站https://chatbot.cryptometa.ai注册成为VIP`);
+              await this.bot.sendMessage(msg.chat.id, `在网站上注册成为VIP后，可向我发送以下指令进行确认：/checkVIP`);
               return;
             }
             const fileId = msg.voice.file_id;
@@ -124,6 +125,10 @@ export class TelegramChatBot {
             await this.speech.setLanguage(msg.from.id, msg.text.substr('/setLanguage'.length).trim());
             await this.bot.sendMessage(msg.chat.id, "已设置成功，可以开始" + msg.text.substr('/setLanguage'.length).trim() + "对话");
             break;
+          case msg.text.startsWith('/checkVip'):
+            const bVip = await this.vip.checkVip(msg.from.id);
+            await this.bot.sendMessage(msg.chat.id, bVip ? "恭喜您是VIP用户" : "对不起，您目前不是VIP用户");
+            break;
           case msg.text.length >= 2:
             await this.response(msg, msg.type === 'voice');
             break;
@@ -149,6 +154,8 @@ export class TelegramChatBot {
             if (msg.text.startsWith("翻译为")) {
               const language = msg.text.substr("翻译为".length, 2);
               this.speech.synthesizeVoice(prompt, resText, msg, language);
+            } else {
+              await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, resText, 'text', '');
             }
           } else {
             this.speech.synthesizeVoice(prompt, resText, msg);

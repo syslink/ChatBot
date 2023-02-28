@@ -46,10 +46,10 @@ export class Link {
         const userIds = [];
         Object.keys(this.users).forEach((userId) => {
             // get user's recent 30~60 days' dialog with bot
-            const twoMonthSentences = this.mongodb.getSomeOneDataOfTwoMonths(getTelegramId(userId), new Date());
+            const twoMonthEnSentences = this.mongodb.getSomeOneDataOfTwoMonths(getTelegramId(userId), new Date(), 'en-US');
 
             // filter the duplicated words
-            const filterWords = this.filter(twoMonthSentences);
+            const filterWords = this.filter(twoMonthEnSentences);
 
             // save the result in user's info
             this.users[userId].words = filterWords;

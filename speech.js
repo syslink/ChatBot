@@ -12,6 +12,9 @@ import fs from 'fs';
 import { getTelegramId } from './web3Auth.js';
 import Languages from './languages.json' assert { type: "json" };
 
+// aws 语音识别：https://docs.aws.amazon.com/zh_cn/sdk-for-javascript/v3/developer-guide/transcribe-examples-section.html
+// aws 语音合成：
+// https://learn.microsoft.com/zh-cn/azure/cognitive-services/speech-service/language-support?tabs=tts
 export class SpeechWrapper {
   constructor(telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger) {
     this.ffmpeg = new FfmpegCommand();
@@ -108,7 +111,7 @@ export class SpeechWrapper {
                     await this.telegramBot.getNativeBot().sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
                   }
                   if (this.mongodb != null) 
-                    await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, curSpeecConfig.speechRecognitionLanguage);
+                    await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, 'voice', curSpeecConfig.speechRecognitionLanguage);
                 })
                 .on('error', function(err) {
                   this.logger.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);

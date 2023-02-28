@@ -14,25 +14,44 @@ export class Database {
         this.mongodbo = this.client.db("chatbot");
         this.dialogCol = this.mongodbo.collection('englishDialog');
         this.languageSettingCol = this.mongodbo.collection('languageSetting');
+        this.socialEnableCol = this.mongodbo.collection('socialEnable');
     }
-    async insertDialog(telegramId, prompt, completion, language) {
+    async insertDialog(telegramId, prompt, completion, contentType, language) {
         const today = new Date();
-        await this.dialogCol.insertOne({telegramId, prompt, completion, language, 
+        await this.dialogCol.insertOne({telegramId, prompt, completion, contentType, language, 
                                         date: getCurDate(today), 
                                         week: getWeek(today),
                                         month: getMonth(today)});
     }
 
+    async setSocialEnable(telegramId, enable) {
+        if (enable) {
+            await this.socialEnableCol.insertOne({telegramId});
+        } else {
+            await this.socialEnableCol.deleteOne({telegramId});
+        }
+    }
+
+    async isSocialEnable(telegramId) {
+        const result = await this.socialEnableCol.findOne({telegramId});
+        return result != null;
+    }
+
+    async getAllSocialEnableIds() {
+        const result = await this.socialEnableCol.find();
+        return result.toArray();
+    }
+
     async insertOrUpdateLanguageSetting(telegramId, languageSetting) {
         await this.languageSettingCol.updateOne(
-            { id: telegramId },
+            { telegramId },
             { $set: languageSetting },
             { upsert: true }
         );
     }
 
     async getLanguageSetting(telegramId) {
-        const result = await this.languageSettingCol.findOne({ id: telegramId });
+        const result = await this.languageSettingCol.findOne({ telegramId });
         return result;
     }
 
@@ -47,10 +66,14 @@ export class Database {
         const result = await cursor.toArray();
         return result;
     }
-
-    async getSomeOneDataOfOneMonth(telegramId, date) {
+    
+    async getSomeOneDataOfOneMonth(telegramId, date, language) {
         const curMonth = getMonth(date);
-        const cursor = await this.dialogCol.find({telegramId, month: curMonth});
+        const queryCondtion = ({telegramId, month: curMonth});
+        if (language != null) {
+            queryCondtion.language = language;
+        }
+        const cursor = await this.dialogCol.find(queryCondtion);
         const result = await cursor.toArray();
         return result;
     }
