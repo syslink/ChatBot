@@ -17,7 +17,6 @@ import Languages from './languages.json' assert { type: "json" };
 // https://learn.microsoft.com/zh-cn/azure/cognitive-services/speech-service/language-support?tabs=tts
 export class SpeechWrapper {
   constructor(telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger) {
-    this.ffmpeg = new FfmpegCommand();
     this.telegramBot = telegramBot;
     this.mongodb = mongodb;
     this.logger = logger;
@@ -80,7 +79,7 @@ export class SpeechWrapper {
     });
   }
   
-  async synthesizeVoice(prompt, completion, msg, language) {
+  async synthesizeVoice(prompt, completion, msg, language, bSendTextMsg) {
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
     const fileName = `./voiceFiles/${chatId}-${msgId}-res.wav`;
@@ -93,28 +92,29 @@ export class SpeechWrapper {
       curSpeecConfig.speechSynthesisVoiceName = tmpLanguageType['synthesisVoiceName'];
     }
     let synthesizer = new SpeechSynthesizer(curSpeecConfig, audioConfig);
-    console.log("start synthesis voice");
+    this.logger.info("start synthesis voice:", fileName);
+    const _this = this;
     synthesizer.speakTextAsync(completion,
       function (result) {
-        console.log(result);
         if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-          console.log("synthesis finished, start to convert wav => ogg");
-          this.logger.debug("synthesis finished.", fileName, ", duration=", result.audioDuration);
+          _this.logger.debug("synthesis finished.", fileName, ", duration=", result.audioDuration);
           const ffmpeg = new FfmpegCommand();
           ffmpeg.input(fileName)
                 .output(outputFileName)
                 .on('end', async function() {
-                  this.logger.debug(fileName + ' => ' + outputFileName);
+                  _this.logger.debug(fileName + ' => ' + outputFileName);
                   const response = 'You: ' + prompt + '\n\nChatGPT: ' + completion;                  
-                  if (this.telegramBot != null) {
-                    await this.telegramBot.getNativeBot().sendMessage(chatId, response, { parse_mode: 'Markdown' });
-                    await this.telegramBot.getNativeBot().sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
+                  if (_this.telegramBot != null) {
+                    if (bSendTextMsg) {
+                      await _this.telegramBot.getNativeBot().sendMessage(chatId, response, { parse_mode: 'Markdown' });
+                    }
+                    await _this.telegramBot.getNativeBot().sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
                   }
-                  if (this.mongodb != null) 
-                    await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, 'voice', curSpeecConfig.speechRecognitionLanguage);
+                  if (_this.mongodb != null) 
+                    await _this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, 'voice', curSpeecConfig.speechRecognitionLanguage);
                 })
                 .on('error', function(err) {
-                  this.logger.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
+                  _this.logger.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
                 })
                 .run(); 
         } else {
@@ -155,7 +155,7 @@ const test = async () => {
   fs.access(fileName, fs.constants.F_OK, (err) => {
     if (err) {
       console.log('File does not exist');      
-      speech.synthesizeVoice('hello', 'what can i do for you?', msg, '英语');
+      speech.synthesizeVoice('hello', 'what can i do for you?', msg, '英语', true);
     } else {
       console.log('File exists');
       speech.recognizeVoice(msg, fileName);

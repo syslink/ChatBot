@@ -22,7 +22,7 @@
     "日语": {
       "recognition": "ja-JP",
       "synthesisLanguage": "ja-JP",
-      "synthesisVoiceName": "fr-FR-AlainNeural"
+      "synthesisVoiceName": "ja-JP-AoiNeural"
     },
     "韩语": {
       "recognition": "ko-KR",

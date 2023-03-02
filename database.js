@@ -3,8 +3,9 @@ import { getCurDate, getWeek, getMonth } from './utils.js';
 import * as dotenv from 'dotenv';
 
 export class Database {
-    constructor(mongodbUrl) {
+    constructor(mongodbUrl, logger) {
         this.mongodbUrl = mongodbUrl;
+        this.logger = logger;
     }
 
     async init() {
@@ -61,7 +62,7 @@ export class Database {
     }   
     
     async getAllDataOfOneWeek(date) {
-        const week = getWeek(today);
+        const week = getWeek(date);
         const cursor = await this.dialogCol.find({week});
         const result = await cursor.toArray();
         return result;
@@ -107,3 +108,5 @@ const test = async () => {
     console.log(await mongodb.getSomeoneCountOfOneDay('111', new Date()));
     console.log(await mongodb.getAllDataOfOneWeek(new Date()));
 }
+
+// test();

@@ -1,5 +1,6 @@
 import { getTelegramId } from "./web3Auth";
 
+// 
 export class Link {
     constructor(mongodb, openAI) {
         this.mongodb = mongodb;
@@ -63,7 +64,7 @@ export class Link {
                 const userAWords = this.users[userIds[i]].words;
                 const userBWords = this.users[userIds[j]].words;
                 const sentence2OpenAI = `请帮我判断下面两句话的相关性程度，并给出分数，0分表示完全不相关，100分表示完全一样，句子A：${userAWords} 句子B：${userBWords}`;
-                const response = await this.openAI.getResponse(sentence2OpenAI, 100);
+                const response = await this.openAI.getResponse('chatbot', sentence2OpenAI, 100);
                 const pattern = /\d+/g;
                 const numbers = response.match(pattern);
                 if (numbers.length == 0) continue;

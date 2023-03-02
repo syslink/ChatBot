@@ -1,21 +1,476 @@
-[2023-02-21T17:46:28.810] [DEBUG] chatbot - 2023/2/21 17:46:28 --Bot has been started...
-[2023-02-21T20:39:47.322] [INFO] chatbot - 2023/2/21 20:39:47 --Bot has been started...
-[2023-02-21T20:42:59.251] [INFO] chatbot - 2023/2/21 20:42:59 --Bot has been started...
-[2023-02-21T20:44:23.942] [INFO] chatbot - 2023/2/21 20:44:23 --Bot has been started...
-[2023-02-21T20:46:10.076] [INFO] chatbot - 2023/2/21 20:46:10 --Bot has been started...
-[2023-02-21T20:47:30.485] [INFO] chatbot - 2023/2/21 20:47:30 --Bot has been started...
-[2023-02-21T20:57:19.623] [INFO] chatbot - 2023/2/21 20:57:19 --Bot has been started...
-[2023-02-21T20:59:46.522] [INFO] chatbot - 2023/2/21 20:59:46 --Bot has been started...
-[2023-02-21T23:54:09.064] [INFO] chatbot - 2023/2/21 23:54:09 --Bot has been started...
-[2023-02-22T16:26:21.106] [INFO] chatbot - 2023/2/22 16:26:21 --Bot has been started...
-[2023-02-22T16:26:39.708] [INFO] chatbot - 2023/2/22 16:26:39 --Bot has been started...
-[2023-02-23T13:40:35.567] [INFO] chatbot - 2023/2/23 13:40:35 --Bot has been started...
-[2023-02-23T13:41:13.207] [INFO] chatbot - 2023/2/23 13:41:13 --Bot has been started...
-[2023-02-23T13:44:03.757] [INFO] chatbot - 2023/2/23 13:44:03 --Bot has been started...
-[2023-02-23T13:56:36.431] [INFO] chatbot - 2023/2/23 13:56:36 --Bot has been started...
-[2023-02-23T13:57:31.819] [INFO] chatbot - 2023/2/23 13:57:31 --Bot has been started...
-[2023-02-23T14:08:12.727] [INFO] chatbot - 2023/2/23 14:08:12 --Bot has been started...
-[2023-02-23T14:08:26.884] [INFO] chatbot - 2023/2/23 14:08:26 --Bot has been started...
-[2023-02-23T14:09:04.355] [INFO] chatbot - 2023/2/23 14:09:04 --Bot has been started...
-[2023-02-23T14:12:15.767] [INFO] chatbot - 2023/2/23 14:12:15 --Bot has been started...
-[2023-02-26T22:51:59.097] [INFO] chatbot - 2023/2/26 22:51:59 --Bot has been started...
+[2023-03-02T13:58:16.927] [INFO] chatbot - 2023/3/2 13:58:16 [ '--Bot has been started...' ]
+[2023-03-02T13:58:35.723] [INFO] chatbot - 2023/3/2 13:58:35 [ '--Received message from id:', 849007458, ':', '下午好' ]
+[2023-03-02T13:59:34.587] [INFO] chatbot - 2023/3/2 13:59:34 [ '--Bot has been started...' ]
+[2023-03-02T13:59:35.468] [INFO] chatbot - 2023/3/2 13:59:35 [ '--Received message from id:', 849007458, ':', '下午好' ]
+[2023-03-02T13:59:36.134] [DEBUG] chatbot - null 
+[2023-03-02T13:59:37.582] [DEBUG] chatbot - 下午好！我是AI语言模型，需要什么帮助吗？ 
+[2023-03-02T13:59:38.667] [ERROR] chatbot - An error occurred during OpenAI request [
+  ReferenceError: today is not defined
+      at getMonth (file:///C:/Users/chutou/openai/utils.js:19:5)
+      at Database.insertDialog (file:///C:/Users/chutou/openai/database.js:25:48)
+      at TelegramChatBot.response (file:///C:/Users/chutou/openai/telegramBot.js:159:34)
+      at async TelegramChatBot.msgHandler (file:///C:/Users/chutou/openai/telegramBot.js:133:13)
+      at async TelegramBot.<anonymous> (file:///C:/Users/chutou/openai/telegramBot.js:60:13)
+]
+[2023-03-02T14:00:09.515] [INFO] chatbot - 2023/3/2 14:00:09 [ '--Bot has been started...' ]
+[2023-03-02T14:00:26.301] [INFO] chatbot - 2023/3/2 14:00:26 [ '--Received message from id:', 849007458, ':', '请问你是如何收费的' ]
+[2023-03-02T14:00:26.962] [DEBUG] chatbot - null 
+[2023-03-02T14:00:28.866] [DEBUG] chatbot - 作为语言模型 AI，我不会收费，我们是免费的。无需支付任何费用即可自由使用我们的服务，但是请注意，可能有些功能需要使用高级计算资源或API，需要向我们付费。如果您需要更多信息，请联系我们的销售团队。 
+[2023-03-02T14:01:59.094] [INFO] chatbot - 2023/3/2 14:01:59 [ '--Bot has been started...' ]
+[2023-03-02T14:02:00.640] [DEBUG] chatbot - null 
+[2023-03-02T14:04:04.224] [INFO] chatbot - 2023/3/2 14:04:04 [ '--Bot has been started...' ]
+[2023-03-02T14:07:44.554] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T14:07:57.892] [DEBUG] chatbot - null 
+[2023-03-02T14:17:13.907] [INFO] chatbot - --Received message from id: [ 849007458, ':', '哈哈哈' ]
+[2023-03-02T14:17:15.051] [DEBUG] chatbot - 我不知道你在想什么，但是作为 AI，我无法笑出声。有什么需要我的帮助吗？ 
+[2023-03-02T14:47:34.626] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T14:47:51.231] [INFO] chatbot - --Received message from id: [ 849007458, ':', '抖个机灵' ]
+[2023-03-02T14:47:51.895] [DEBUG] chatbot - null 
+[2023-03-02T14:47:53.458] [DEBUG] chatbot - 很抱歉，我不是很明白您的意思。请问您需要什么帮助吗？ 
+[2023-03-02T18:26:52.171] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T18:27:34.252] [DEBUG] chatbot - null 
+[2023-03-02T18:27:38.548] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-135.ogg => ./voiceFiles/849007458-135.mp3 
+[2023-03-02T18:27:44.604] [DEBUG] chatbot - As an AI language model and not having personal interests, I don't have the ability to like or dislike any kind of dishes. However, here are some recommended dishes that people from Jiangsu Province, located in the eastern region of China, are known to enjoy:
+
+1. Steamed dumplings (Xiaolongbao): A savory soup-filled steamed dumpling often served as an appetizer.
+
+2. Sweet and Sour Mandarin Fish (Tangcu Yu): A crispy fish dish covered in a sweet and sour sauce made with tomato ketchup and vinegar.
+
+3. Lion's Head Meatballs (Shizitou): Large meatballs made of ground pork and vegetables soaked in a savory broth.
+
+4. Braised Pork Belly (Hong Shao Rou): A popular dish of braised pork belly with soy sauce, sugar, and other spices.
+
+5. Fried Rice Cakes (Nian Gao Chao): A stir-fried dish made with glutinous rice cakes, scall 
+[2023-03-02T19:00:46.958] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:00:57.837] [DEBUG] chatbot - null 
+[2023-03-02T19:01:01.254] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-136.ogg => ./voiceFiles/849007458-136.mp3 
+[2023-03-02T19:01:04.047] [DEBUG] chatbot - I'm sorry, as an AI language model, I do not have the ability to access real-time weather information. However, you may check for the current weather in your area through your local weather service or application. 
+[2023-03-02T19:01:04.050] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-136-res.wav' ]
+[2023-03-02T19:01:06.629] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-136-res.wav', ', duration=', 133875000 ]
+[2023-03-02T19:02:22.725] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:02:30.391] [DEBUG] chatbot - null 
+[2023-03-02T19:02:33.561] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-137.ogg => ./voiceFiles/849007458-137.mp3 
+[2023-03-02T19:02:35.981] [DEBUG] chatbot - Actually, 1 plus 5 equals 6. 
+[2023-03-02T19:02:35.983] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-137-res.wav' ]
+[2023-03-02T19:02:38.054] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-137-res.wav', ', duration=', 33125000 ]
+[2023-03-02T19:02:38.100] [DEBUG] chatbot - ./voiceFiles/849007458-137-res.wav => ./voiceFiles/849007458-137-res.ogg 
+[2023-03-02T19:04:04.921] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-140.ogg => ./voiceFiles/849007458-140.mp3 
+[2023-03-02T19:04:09.802] [DEBUG] chatbot - As an AI language model, I don't have beliefs and values that cultures and religions embody. However, Christians believe these are the main characteristics of their faith:
+
+1. Belief in One God - Christianity believes in one God, who reveals himself as three persons: the Father, the Son, and the Holy Spirit.
+
+2. Faith in Jesus Christ - Christians believe that Jesus Christ is the Son of God and the Savior of the world.
+
+3. The Bible - The Bible is the sacred text of Christianity and contains God's teachings and the stories of the life and teachings of Jesus Christ.
+
+4. Salvation - Christians believe that salvation is through faith in Jesus Christ and his death and resurrection.
+
+5. Love and Service - Christians believe in love and service to others, following the example of Jesus Christ.
+
+6. Forgiveness - Christians believes in the forgiveness of sins and the redemption of humanity through God's love and mercy.
+
+7. Grace - Christians believe that God's grace is the unearned and 
+[2023-03-02T19:04:09.805] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-140-res.wav' ]
+[2023-03-02T19:04:14.730] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-140-res.wav', ', duration=', 659875000 ]
+[2023-03-02T19:04:14.941] [DEBUG] chatbot - ./voiceFiles/849007458-140-res.wav => ./voiceFiles/849007458-140-res.ogg 
+[2023-03-02T19:06:41.797] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为法语：你有男朋友吗' ]
+[2023-03-02T19:06:42.749] [DEBUG] chatbot - Avez-vous un petit ami ? 
+[2023-03-02T19:06:43.886] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-143-res.wav' ]
+[2023-03-02T19:06:45.519] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-143-res.wav', ', duration=', 19500000 ]
+[2023-03-02T19:06:45.568] [DEBUG] chatbot - ./voiceFiles/849007458-143-res.wav => ./voiceFiles/849007458-143-res.ogg 
+[2023-03-02T19:07:33.803] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为英语：你有男朋友吗' ]
+[2023-03-02T19:07:34.922] [DEBUG] chatbot - Do you have a boyfriend? 
+[2023-03-02T19:07:35.987] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-147-res.wav' ]
+[2023-03-02T19:07:37.707] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-147-res.wav', ', duration=', 19875000 ]
+[2023-03-02T19:07:37.761] [DEBUG] chatbot - ./voiceFiles/849007458-147-res.wav => ./voiceFiles/849007458-147-res.ogg 
+[2023-03-02T19:10:53.583] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为日语：你有男朋友吗' ]
+[2023-03-02T19:10:54.605] [DEBUG] chatbot - 彼氏はいるのですか？ 
+[2023-03-02T19:10:55.668] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-151-res.wav' ]
+[2023-03-02T19:10:56.731] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-151-res.wav', ', duration=', 0 ]
+[2023-03-02T19:10:56.790] [DEBUG] chatbot - ./voiceFiles/849007458-151-res.wav => ./voiceFiles/849007458-151-res.ogg 
+[2023-03-02T19:12:38.204] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为日语：我爱你' ]
+[2023-03-02T19:12:39.244] [DEBUG] chatbot - わたしはあなたを愛しています。 
+[2023-03-02T19:12:40.332] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-155-res.wav' ]
+[2023-03-02T19:12:41.426] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-155-res.wav', ', duration=', 0 ]
+[2023-03-02T19:12:41.482] [DEBUG] chatbot - ./voiceFiles/849007458-155-res.wav => ./voiceFiles/849007458-155-res.ogg 
+[2023-03-02T19:12:54.558] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为韩语：你有男朋友吗' ]
+[2023-03-02T19:12:55.540] [DEBUG] chatbot - 당신은 남자 친구가 있나요? 
+[2023-03-02T19:12:56.642] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-159-res.wav' ]
+[2023-03-02T19:12:58.431] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-159-res.wav', ', duration=', 31000000 ]
+[2023-03-02T19:12:58.482] [DEBUG] chatbot - ./voiceFiles/849007458-159-res.wav => ./voiceFiles/849007458-159-res.ogg 
+[2023-03-02T19:21:46.065] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:25:09.538] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:25:18.291] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为日语：我爱你' ]
+[2023-03-02T19:25:18.965] [DEBUG] chatbot - null 
+[2023-03-02T19:25:20.181] [DEBUG] chatbot - 私はあなたを愛しています。 
+[2023-03-02T19:25:21.293] [INFO] chatbot - start synthesis voice: [ './voiceFiles/849007458-163-res.wav' ]
+[2023-03-02T19:25:23.346] [DEBUG] chatbot - synthesis finished. [ './voiceFiles/849007458-163-res.wav', ', duration=', 31500000 ]
+[2023-03-02T19:25:23.439] [DEBUG] chatbot - ./voiceFiles/849007458-163-res.wav => ./voiceFiles/849007458-163-res.ogg 
+[2023-03-02T19:36:46.294] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为德语' ]
+[2023-03-02T19:37:07.374] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 202.160.130.66:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '202.160.130.66',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"翻译为德语"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 198,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T19:41:32.998] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为德语：我爱你' ]
+[2023-03-02T19:41:54.047] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 108.160.169.179:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '108.160.169.179',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"翻译为德语：我爱你"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 210,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T19:46:49.531] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:47:21.795] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:47:31.218] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为德语：我爱你' ]
+[2023-03-02T19:47:31.887] [DEBUG] chatbot - null 
+[2023-03-02T19:47:53.170] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 108.160.165.8:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '108.160.165.8',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"翻译为德语：我爱你"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 210,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T19:48:20.034] [INFO] chatbot - --Received message from id: [ 849007458, ':', '还能用吗' ]
+[2023-03-02T19:59:05.177] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 108.160.165.8:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '108.160.165.8',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"user","content":"还能用吗"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 195,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T19:59:13.270] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:59:22.641] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为德语：我爱你' ]
+[2023-03-02T19:59:23.307] [DEBUG] chatbot - null 
+[2023-03-02T19:59:23.530] [ERROR] chatbot - An error occurred during OpenAI request [
+  ReferenceError: getDavinciAPIResponse is not defined
+      at OpenAI.getResponse (file:///C:/Users/chutou/openai/openAI.js:17:13)
+      at TelegramChatBot.response (file:///C:/Users/chutou/openai/telegramBot.js:157:45)
+      at TelegramChatBot.msgHandler (file:///C:/Users/chutou/openai/telegramBot.js:140:24)
+      at TelegramBot.<anonymous> (file:///C:/Users/chutou/openai/telegramBot.js:65:24)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+]
+[2023-03-02T19:59:50.102] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T19:59:54.636] [INFO] chatbot - --Received message from id: [ 849007458, ':', '翻译为德语：我爱你' ]
+[2023-03-02T19:59:55.301] [DEBUG] chatbot - null 
+[2023-03-02T20:00:16.597] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 199.59.149.235:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '199.59.149.235',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"text-davinci-003","prompt":"翻译为德语：我爱你","max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 183,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T20:39:11.667] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T20:39:22.421] [INFO] chatbot - --Received message from id: [ 849007458, ':', '在吗' ]
+[2023-03-02T20:39:23.185] [DEBUG] chatbot - null 
+[2023-03-02T20:39:44.485] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 31.13.95.38:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '31.13.95.38',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"text-davinci-003","prompt":"在吗","max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 162,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-02T23:57:08.772] [INFO] chatbot - --Bot has been started... 
+[2023-03-02T23:57:21.162] [INFO] chatbot - --Received message from id: [ 849007458, ':', '很有意思' ]
+[2023-03-02T23:57:21.851] [DEBUG] chatbot - null 
+[2023-03-02T23:58:47.864] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 199.96.62.75:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '199.96.62.75',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"text-davinci-003","prompt":"很有意思","max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 168,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-03T00:03:46.356] [INFO] chatbot - --Bot has been started... 
+[2023-03-03T00:04:16.427] [INFO] chatbot - --Received message from id: [ 849007458, ':', '美国在那里' ]
+[2023-03-03T00:04:17.121] [DEBUG] chatbot - null 
+[2023-03-03T00:04:17.346] [INFO] chatbot - start to get response from openai [ '美国在那里' ]

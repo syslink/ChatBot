@@ -16,5 +16,5 @@ export function getWeek(date) {
 }
 
 export function getMonth(date) {
-    return today.getFullYear() + '-' + today.getMonth();
+    return date.getFullYear() + '-' + date.getMonth();
 }

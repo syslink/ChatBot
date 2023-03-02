@@ -1,2 +1,4 @@
 .env
+chatbot.log
 node_modules
+voiceFiles

@@ -1,12 +1,17 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { getTelegramId, sign } from './web3Auth.js';
 import FfmpegCommand  from 'fluent-ffmpeg';
+import fs from 'fs';
 
 export class TelegramChatBot {
-    constructor(speakbot_token, mongodb, maxVoiceDialogNumber, bStartVip, vip, openAI, groupPrefix, logger) {
-        this.bot = new TelegramBot(speakbot_token, { polling: true});
+    constructor(speakbot_token, mongodb, maxVoiceDialogNumber, bStartVip, vip, openAI, groupPrefix, logger, bInLocal) {
+        if (bInLocal) {
+          this.bot = new TelegramBot(speakbot_token, { polling: true, request: { proxy: "socks5://127.0.0.1:1080" }});
+        } else {
+          this.bot = new TelegramBot(speakbot_token, { polling: true });
+        }
         this.logger = logger;
-        this.logger.info(new Date().toLocaleString(), '--Bot has been started...');
+        this.logger.info('--Bot has been started...');
         this.userInited = {};
         this.userDialogCount = {};
         this.mongodb = mongodb;
@@ -38,7 +43,7 @@ export class TelegramChatBot {
     }
 
     async checkUserValid(msg) {
-        if (bStartVip) {
+        if (this.bStartVip) {
             if (this.userDialogCount[msg.from.id] >= this.maxVoiceDialogNumber) {
                 const bVip = await this.vip.checkVip(msg.from.id);
                 if (!bVip) {
@@ -52,9 +57,9 @@ export class TelegramChatBot {
 
     async startListenText() {
         this.bot.on('text', async (msg) => {
-            this.logger.info(new Date().toLocaleString(), '--Received message from id:', msg.chat.id, ':', msg.text);  
+            this.logger.info('--Received message from id:', msg.chat.id, ':', msg.text);  
             msg.type = 'text';
-            if (userInited[msg.from.id] != true) {
+            if (this.userInited[msg.from.id] != true) {
               await this.initUserInfo(msg);
             }
             await this.msgHandler(msg);
@@ -63,7 +68,7 @@ export class TelegramChatBot {
 
     async startListenVoice() {
         this.bot.on('voice', async (msg) => {
-            if (userInited[msg.from.id] != true) {
+            if (this.userInited[msg.from.id] != true) {
               await this.initUserInfo(msg);
             }
             let bPass = await this.checkUserValid(msg);
@@ -76,22 +81,27 @@ export class TelegramChatBot {
             const chatId = msg.chat.id;
             const msgId = msg.message_id;
             msg.type = 'voice';
+            const _this = this;
             this.bot.getFileLink(fileId).then(fileLink => {
               // 下载语音文件
               this.bot.downloadFile(fileId, './').then(voicePath => {
                 const fileName = `./voiceFiles/${chatId}-${msgId}.ogg`;
-                const outputFileName = `./voiceFiles/${chatId}-${msgId}.wav`;
+                const outputFileName = `./voiceFiles/${chatId}-${msgId}.mp3`;
                 fs.renameSync(voicePath, fileName);
                 const ffmpeg = new FfmpegCommand();
                 ffmpeg.input(fileName)
                       .output(outputFileName)
-                      .on('end', function() {
-                        this.logger.debug('\n\n' + fileName + ' => ' + outputFileName);
-                        this.speech.recognizeVoice(msg, outputFileName);
+                      .on('end', () => {
+                        _this.logger.debug('\n\n' + fileName + ' => ' + outputFileName);
+                        //_this.speech.recognizeVoice(msg, outputFileName);
+                        _this.openAI.getTranslation(outputFileName).then(translatedText => {
+                          msg.text = translatedText;
+                          _this.msgHandler(msg);
+                        })
                         //ffmpeg.close();
                       })
                       .on('error', function(err) {
-                        this.logger.error(fileName + ' =xx=> ' + outputFileName + err.message);
+                        _this.logger.error(fileName + ' =xx=> ' + outputFileName + err.message);
                         //ffmpeg.close();
                       })
                       .run();            
@@ -109,12 +119,9 @@ export class TelegramChatBot {
           case msg.text.startsWith('/start'):
             await this.bot.sendMessage(msg.chat.id, 
               '👋您好！我是搭载ChatGPT内核的聊天机器人，您可以同我文字交谈，也可以跟我进行多国语言口语对话，\
-              目前支持的语言包括：中文、英语、西班牙语、德语、法语、日语以及韩语，默认的口语对话为英语');
+              所有口语我都将转译为英语，并用英语口语进行回复。');
             await this.bot.sendMessage(msg.chat.id, 
-                '当需要切换到其它语言进行口语对话时，可向我发送命令：/setLanguage 西班牙语，或者: /setLanguage 中文，\
-                即可切换到西班牙语或中文进行对话');
-            await this.bot.sendMessage(msg.chat.id, 
-              '除此之外，如果您需要我将文本翻译为其它语言并让我朗读出来，请按此格式给我发送文本信息：翻译为英语：xxx, 翻译为法语：xxx');
+              '除此之外，如果您需要我将文本翻译为其它语言并让我朗读出来，请按以下格式给我发送文本信息：翻译为英语：xxx, 翻译为法语：xxx');
             break;
           case msg.text.startsWith('/verify'):
             const signature = sign(msg.from.id, msg.text.substr('/verify'.length).trim());
@@ -140,13 +147,15 @@ export class TelegramChatBot {
       
       async response(msg, bVoice) {
         let intervalId;
+        const telegramId = getTelegramId(msg.from.id);
         try {
           this.bot.sendChatAction(msg.chat.id, 'typing');
           intervalId = setInterval(() => {
               this.bot.sendChatAction(msg.chat.id, bVoice ? 'record_voice' : 'typing');
           }, 5000);
           const prompt = msg.text.startsWith(this.groupPrefix) ? msg.text.replace(this.groupPrefix, '').trim() : msg.text.trim();
-          const resText = await this.openAI.getResponse(prompt, bVoice ? 200 : 500);
+          this.logger.info('start to get response from openai', prompt);
+          const resText = await this.openAI.getResponse(telegramId, prompt, bVoice ? 200 : 500);
           clearInterval(intervalId);
           
           if (!bVoice) {
@@ -155,10 +164,10 @@ export class TelegramChatBot {
               const language = msg.text.substr("翻译为".length, 2);
               this.speech.synthesizeVoice(prompt, resText, msg, language);
             } else {
-              await this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, resText, 'text', '');
+              await this.mongodb.insertDialog(telegramId, prompt, resText, 'text', '');
             }
           } else {
-            this.speech.synthesizeVoice(prompt, resText, msg);
+            this.speech.synthesizeVoice(prompt, resText, msg, true);
           }
           return;
         } catch (error) {
