@@ -167,7 +167,7 @@ export class TelegramChatBot {
               await this.mongodb.insertDialog(telegramId, prompt, resText, 'text', '');
             }
           } else {
-            this.speech.synthesizeVoice(prompt, resText, msg, true);
+            this.speech.synthesizeVoice(prompt, resText, msg, null, true);
           }
           return;
         } catch (error) {
