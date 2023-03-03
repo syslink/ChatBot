@@ -8,6 +8,7 @@ export class OpenAI {
         this.openAI = new OpenAIApi(configuration);
         this.gptModel = gptModel;
         this.logger = logger;
+        this.userContextLog = {}
     }
 
     async getResponse(userId, prompt, maxTokens) {
@@ -19,9 +20,13 @@ export class OpenAI {
     }
 
     async getChatGPTAPIResponse(userId, prompt, maxTokens) {
+        const context = this.getUserContext(userId);
         const res = await this.openAI.createChatCompletion({
             model: this.gptModel,
-            messages: [{"role": "user", "content": prompt}],
+            messages: [
+                {"role": "system", "content": "You are a helpful assistant."},
+                ...context,
+                {"role": "user", "content": prompt}],
             max_tokens: maxTokens,
             top_p: 1,
             stop: "###",
@@ -32,7 +37,8 @@ export class OpenAI {
         if (resText.indexOf("\n\n") > 0) {
             resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length).trim();
         }
-        this.logger.debug(resText.trim());
+        resText = resText.trim();
+        this.logger.debug(resText);
         return resText;
     }
 
@@ -49,8 +55,26 @@ export class OpenAI {
         if (resText.indexOf("\n\n") > 0) {
             resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length).trim();
         }
-        this.logger ? this.logger.debug(resText.trim()) : console.log(resText.trim());
+        resText = resText.trim();
+        this.logger.debug(resText);
         return resText;
+    }
+
+    saveContext(userId, prompt, completion) {
+        if (this.userContextLog[userId] == null) {
+            this.userContextLog[userId] = [];
+        }
+        this.userContextLog[userId].push({"role": "user", "content": prompt});
+        this.userContextLog[userId].push({"role": "assistant", "content": completion});
+        if (this.userContextLog[userId].length > 10) {
+            this.userContextLog[userId] = this.userContextLog[userId].slice(2);
+        }
+    }
+
+    getUserContext(userId) {
+        if (this.userContextLog[userId] == null) return [];
+
+        return this.userContextLog[userId];
     }
 
     async getWhisperResponse(voiceFilePath) {

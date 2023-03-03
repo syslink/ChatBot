@@ -20,6 +20,7 @@ export class Database {
     async insertDialog(telegramId, prompt, completion, contentType, language) {
         const today = new Date();
         await this.dialogCol.insertOne({telegramId, prompt, completion, contentType, language, 
+                                        time: today.getTime(),
                                         date: getCurDate(today), 
                                         week: getWeek(today),
                                         month: getMonth(today)});
