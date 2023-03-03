@@ -39,6 +39,7 @@ export class OpenAI {
         }
         resText = resText.trim();
         this.logger.debug(resText);
+        saveContext(userId, prompt, resText);
         return resText;
     }
 
