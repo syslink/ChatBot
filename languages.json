@@ -17,7 +17,7 @@
     "法语": {
       "recognition": "fr-FR",
       "synthesisLanguage": "fr-FR",
-      "synthesisVoiceName": "fr-FR-AlainNeural"
+      "synthesisVoiceName": "fr-FR-BrigitteNeural"
     },
     "日语": {
       "recognition": "ja-JP",
@@ -27,7 +27,7 @@
     "韩语": {
       "recognition": "ko-KR",
       "synthesisLanguage": "ko-KR",
-      "synthesisVoiceName": "ko-KR-BongJinNeural"
+      "synthesisVoiceName": "ko-KR-JiMinNeural"
     },
     "中文": {
       "recognition": "zh-CN",

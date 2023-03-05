@@ -17,6 +17,7 @@ export class Database {
         this.languageSettingCol = this.mongodbo.collection('languageSetting');
         this.socialEnableCol = this.mongodbo.collection('socialEnable');
     }
+
     async insertDialog(telegramId, prompt, completion, contentType, language) {
         const today = new Date();
         await this.dialogCol.insertOne({telegramId, prompt, completion, contentType, language, 
@@ -87,6 +88,11 @@ export class Database {
         const result = await cursor.toArray();
         return result;
     }
+
+    async getAllTelegramId() {
+        const telegramIds = await this.dialogCol.distinct('telegramId');
+        return telegramIds;
+    }
 }
 
 const test = async () => {
@@ -110,4 +116,25 @@ const test = async () => {
     console.log(await mongodb.getAllDataOfOneWeek(new Date()));
 }
 
+const testGetTelegramIds = async () => {
+    dotenv.config();
+    const { mongodbUrl } = process.env;
+    console.log(mongodbUrl);
+    const mongodb = new Database(mongodbUrl);
+    await mongodb.init();
+
+    const telegramIds = await mongodb.getAllTelegramId();
+    console.log(telegramIds.length);
+    telegramIds.map(telegramId => {
+        mongodb.getSomeOneDataOfOneMonth(telegramId, new Date()).then(dialogs => {
+            if (dialogs.length > 10)
+                console.log(telegramId, dialogs.length);
+            // dialogs.map(dialog => {
+            //     console.log('  ', dialog.prompt);
+            // })
+        })
+    })
+}
+
 // test();
+testGetTelegramIds();

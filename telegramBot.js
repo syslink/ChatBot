@@ -20,6 +20,7 @@ export class TelegramChatBot {
         this.vip = vip;
         this.openAI = openAI;
         this.groupPrefix = groupPrefix;
+        this.blockedUsers = {};
     }
 
     getNativeBot() {
@@ -57,6 +58,15 @@ export class TelegramChatBot {
 
     async startListenText() {
         this.bot.on('text', async (msg) => {
+            if (msg.text && msg.text.match(/ETELEGRAM: 403 Forbidden/)) {
+              this.blockedUsers[msg.chat.id] = true;
+              this.logger.debug(`User ${msg.chat.id} has blocked the bot`);
+            }
+            if (this.blockedUsers[msg.chat.id]) {
+              this.logger.debug(`User ${msg.chat.id} is blocked`);
+              return;
+            }
+          
             this.logger.info('--Received message from id:', msg.chat.id, ':', msg.text);  
             msg.type = 'text';
             if (this.userInited[msg.from.id] != true) {
