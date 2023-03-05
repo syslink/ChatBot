@@ -137,4 +137,4 @@ const testGetTelegramIds = async () => {
 }
 
 // test();
-testGetTelegramIds();
+// testGetTelegramIds();
