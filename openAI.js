@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import * as dotenv from 'dotenv';
+import log4js from 'log4js';
 import fs from 'fs';
 
 export class OpenAI {
@@ -95,9 +96,15 @@ export class OpenAI {
 
 const testText = async () => {
     dotenv.config();
+    log4js.configure({
+        appenders: { chatbot: { type: "file", filename: "chatbot.log" } },
+        categories: { default: { appenders: ["chatbot"], level: "debug" } },
+    });
+    var logger = log4js.getLogger("chatbot");
+    
     const { apiKey, gptModel } = process.env;
     
-    const openAI = new OpenAI(apiKey, gptModel);
+    const openAI = new OpenAI(apiKey, gptModel, logger);
     await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
 }
 
@@ -117,5 +124,5 @@ const testVoiceTranslation = async (voiceFile) => {
     await openAI.getTranslation(voiceFile);
 }
 
-// await test();
-await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
+await testText();
+//await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
