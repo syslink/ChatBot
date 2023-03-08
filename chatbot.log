@@ -474,3 +474,14 @@
 [2023-03-03T00:04:16.427] [INFO] chatbot - --Received message from id: [ 849007458, ':', '美国在那里' ]
 [2023-03-03T00:04:17.121] [DEBUG] chatbot - null 
 [2023-03-03T00:04:17.346] [INFO] chatbot - start to get response from openai [ '美国在那里' ]
+[2023-03-06T10:14:31.218] [INFO] chatbot - audio url https://s3.us-west-2.amazonaws.com/chatbot4telegram/polly/.78049e89-83cc-43f5-9653-e0a15134759a.ogg
+[2023-03-08T21:42:16.224] [INFO] chatbot - --Bot has been started... 
+[2023-03-08T21:42:30.944] [DEBUG] chatbot - null 
+[2023-03-08T21:42:34.383] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-212.ogg => ./voiceFiles/849007458-212.mp3 
+[2023-03-08T22:01:46.446] [INFO] chatbot - --Bot has been started... 
+[2023-03-08T22:02:01.190] [DEBUG] chatbot - null 
+[2023-03-08T22:02:04.960] [DEBUG] chatbot - 
+
+./voiceFiles/849007458-213.ogg => ./voiceFiles/849007458-213.mp3 

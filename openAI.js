@@ -67,7 +67,7 @@ export class OpenAI {
         }
         this.userContextLog[userId].push({"role": "user", "content": prompt});
         this.userContextLog[userId].push({"role": "assistant", "content": completion});
-        if (this.userContextLog[userId].length > 10) {
+        if (this.userContextLog[userId].length > 6) {
             this.userContextLog[userId] = this.userContextLog[userId].slice(2);
         }
     }
@@ -98,7 +98,7 @@ const testText = async () => {
     const { apiKey, gptModel } = process.env;
     
     const openAI = new OpenAI(apiKey, gptModel);
-    await openAI.getResponse('abcd', '系分析下最近中美关', 2000);
+    await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
 }
 
 const testVoiceRecognize = async (voiceFile) => {
@@ -118,4 +118,4 @@ const testVoiceTranslation = async (voiceFile) => {
 }
 
 // await test();
-// await testVoiceTranslation('./voiceFiles/849007458-129.mp3');
+await testVoiceTranslation('./voiceFiles/849007458-213.mp3');

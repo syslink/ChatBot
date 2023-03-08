@@ -67,7 +67,7 @@ export class TelegramChatBot {
               return;
             }
           
-            this.logger.info('--Received message from id:', msg.chat.id, ':', msg.text);  
+            this.logger.info('--Received message from id:', msg.chat.id, msg.text);  
             msg.type = 'text';
             if (this.userInited[msg.from.id] != true) {
               await this.initUserInfo(msg);
