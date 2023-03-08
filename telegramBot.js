@@ -168,19 +168,20 @@ export class TelegramChatBot {
           const prompt = msg.text.startsWith(this.groupPrefix) ? msg.text.replace(this.groupPrefix, '').trim() : msg.text.trim();
           this.logger.info('start to get response from openai', prompt);
           const resText = await this.openAI.getResponse(telegramId, prompt, bVoice ? 200 : 500);
-          clearInterval(intervalId);
           
           if (!bVoice) {
             await this.bot.sendMessage(msg.chat.id, resText);
             if (msg.text.startsWith("翻译为")) {
               const language = msg.text.substr("翻译为".length, 2);
-              this.speech.synthesizeVoice(prompt, resText, msg, language);
+              await this.speech.synthesizeVoice(prompt, resText, msg, language);
             } else {
               await this.mongodb.insertDialog(telegramId, prompt, resText, 'text', '');
             }
           } else {
-            this.speech.synthesizeVoice(prompt, resText, msg, null, true);
+            await this.speech.synthesizeVoice(prompt, resText, msg, null, true);
           }
+          clearInterval(intervalId);
+          
           return;
         } catch (error) {
             clearInterval(intervalId);

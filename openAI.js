@@ -105,7 +105,8 @@ const testText = async () => {
     const { apiKey, gptModel } = process.env;
     
     const openAI = new OpenAI(apiKey, gptModel, logger);
-    await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
+    const response = await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
+    console.log(response);
 }
 
 const testVoiceRecognize = async (voiceFile) => {
@@ -125,4 +126,4 @@ const testVoiceTranslation = async (voiceFile) => {
 }
 
 await testText();
-//await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
+await testVoiceTranslation('./voiceFiles/849007458-213.mp3');

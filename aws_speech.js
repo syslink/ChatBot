@@ -73,7 +73,7 @@ export class AWSSpeechWrapper {
       synthesisResult = await this.polly.getSpeechSynthesisTask(checkTaskParams);
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 5 seconds
     }
-    console.log('synthesisResult', synthesisResult);
+    //console.log('synthesisResult', synthesisResult);
 
     const audioUrl = synthesisResult.SynthesisTask.OutputUri;
 
