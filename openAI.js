@@ -82,14 +82,14 @@ export class OpenAI {
     async getWhisperResponse(voiceFilePath) {
         const voiceFile = fs.createReadStream(voiceFilePath);
         const res = await this.openAI.createTranscription(voiceFile, 'whisper-1');
-        console.log(JSON.stringify(res.data));
+        this.logger.debug(JSON.stringify(res.data));
         return res.data.text;
     }
 
     async getTranslation(voiceFilePath) {
         const voiceFile = fs.createReadStream(voiceFilePath);
         const res = await this.openAI.createTranslation(voiceFile, 'whisper-1');
-        console.log(JSON.stringify(res.data));
+        this.logger.debug(JSON.stringify(res.data));
         return res.data.text;
     }
 }
@@ -125,5 +125,5 @@ const testVoiceTranslation = async (voiceFile) => {
     await openAI.getTranslation(voiceFile);
 }
 
-await testText();
-await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
+// await testText();
+// await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
