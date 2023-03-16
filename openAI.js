@@ -2,14 +2,17 @@ import { Configuration, OpenAIApi } from "openai";
 import * as dotenv from 'dotenv';
 import log4js from 'log4js';
 import fs from 'fs';
+import { getTelegramId } from './web3Auth.js';
 
 export class OpenAI {
-    constructor(apiKey, gptModel, logger) {
+    constructor(apiKey, gptModel, mongodb, logger) {
         const configuration = new Configuration({ apiKey });
         this.openAI = new OpenAIApi(configuration);
         this.gptModel = gptModel;
+        this.mongodb = mongodb;
         this.logger = logger;
         this.userContextLog = {}
+        this.systemRoleSetting = {}
     }
 
     async getResponse(userId, prompt, maxTokens) {
@@ -20,12 +23,32 @@ export class OpenAI {
         }
     }
 
+    async setSystemRole(userId, systemRoleInfo) {
+        if (systemRoleInfo == null || systemRoleInfo.length == 0) {
+            systemRoleInfo = 'You are a helpful assistant.';
+        }
+        this.systemRoleSetting[userId] = systemRoleInfo;
+        if (this.mongodb != null)
+            await this.mongodb.insertOrUpdateSystemRoleSetting(getTelegramId(userId), systemRoleInfo);
+    }
+
+    async getSystemRole(userId) {
+        if (this.systemRoleSetting[userId] != null) return this.systemRoleSetting[userId];
+        const result = await this.mongodb.getSystemRoleSetting(getTelegramId(userId));
+    
+        if (result == null) return 'You are a helpful assistant.';
+    
+        this.systemRoleSetting[userId] = result.systemRoleInfo;
+        return result.systemRoleInfo;
+      }
+
     async getChatGPTAPIResponse(userId, prompt, maxTokens) {
         const context = this.getUserContext(userId);
+        const systemRole = await this.getSystemRole(userId);
         const res = await this.openAI.createChatCompletion({
             model: this.gptModel,
             messages: [
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": systemRole},
                 ...context,
                 {"role": "user", "content": prompt}],
             max_tokens: maxTokens,
@@ -104,7 +127,7 @@ const testText = async () => {
     
     const { apiKey, gptModel } = process.env;
     
-    const openAI = new OpenAI(apiKey, gptModel, logger);
+    const openAI = new OpenAI(apiKey, gptModel, null, logger);
     const response = await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
     console.log(response);
 }

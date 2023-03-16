@@ -35,8 +35,8 @@ export class TelegramChatBot {
 
     async initUserInfo(msg) {
         const telegramId = getTelegramId(msg.from.id);
-        const setting = await this.mongodb.getLanguageSetting(telegramId);
-        this.logger.debug(setting);
+        // const setting = await this.mongodb.getLanguageSetting(telegramId);
+        // this.logger.debug(setting);
         const count = await this.mongodb.getSomeoneCountOfOneDay(telegramId, new Date());
         this.userDialogCount[msg.from.id] = count;
         
@@ -127,22 +127,40 @@ export class TelegramChatBot {
         }
         switch (true) {
           case msg.text.startsWith('/start'):
+          case msg.text.startsWith('/info'):
             await this.bot.sendMessage(msg.chat.id, 
               '👋您好！我是搭载ChatGPT内核的聊天机器人，您可以同我文字交谈，也可以跟我进行多国语言口语对话，\
-              所有口语我都将自动转译为英语，并用英语口语跟你对话。');
+              所有口语我都将自动转译为英语，并用英语口语跟您对话。');
             await this.bot.sendMessage(msg.chat.id, 
               '除此之外，如果您需要我将文本翻译为其它语言并让我朗读出来，请按以下格式给我发送文本信息：翻译为英语：xxx, 翻译为法语：xxx');
             await this.bot.sendMessage(msg.chat.id, 
               '目前我支持的语言包括: 英语、德语、西班牙语、法语、日语、韩语以及中文');
+            await this.bot.sendMessage(msg.chat.id, 
+              '想知道更多功能，可以给我发送 /help 命令，或者加入我们的群组进行交流：https://t.me/+5UvCseyJmKBkMWNl');
+            break;
+          case msg.text.startsWith('/help'):
+            await this.bot.sendMessage(msg.chat.id, '命令列表：\
+                                                   \n/info 获取本机器人介绍\
+                                                   \n\n/setRole 设置机器人基本角色，这样机器人会尽量按照您设置好的角色特点跟您对话，譬如想要机器人扮演一个英语教师的角色，可以向我发送：/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误\
+                                                   \n\n/setEnTTS 设置机器人的英语口语合成角色，目前支持美国、英国、印度、新加坡这四个国家的男女发音，默认为美国女性口音，如果您想听印度女性的英语口音，可以向我发送：/setEnTTS 印度女性，当想听英国男性的英语口音，则向我发送：/setEnTTS 英国男性\
+                                                   \n\n/setSpeed 设置机器人的语速，正常语速为1，大于1则加快语速，否则为减慢语速，最高2，最低0.5，譬如想语速提高到1.5倍，可以向我发送：/setSpeed 1.5');
             break;
           case msg.text.startsWith('/verify'):
             const signature = sign(msg.from.id, msg.text.substr('/verify'.length).trim());
             this.logger.debug(signature);
             await this.bot.sendMessage(msg.chat.id, JSON.stringify(signature));
             break;
-          case msg.text.startsWith('/setLanguage'):
-            await this.speech.setLanguage(msg.from.id, msg.text.substr('/setLanguage'.length).trim());
-            await this.bot.sendMessage(msg.chat.id, "已设置成功，可以开始" + msg.text.substr('/setLanguage'.length).trim() + "对话");
+          case msg.text.startsWith('/setRole'):
+            await this.openAI.setSystemRole(msg.from.id, msg.text.substr('/setRole'.length).trim());
+            await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
+            break;
+          case msg.text.startsWith('/setEnTTS'):
+            const result = await this.speech.setLanguage(msg.from.id, msg.text.substr('/setEnTTS'.length).trim());
+            await this.bot.sendMessage(msg.chat.id, result.length == 0 ? "恭喜您设置成功" : "对不起，设置错误：" + result);
+            break;
+          case msg.text.startsWith('/setSpeed'):
+            await this.speech.setSpeed(msg.from.id, msg.text.substr('/setSpeed'.length).trim());
+            await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
             break;
           case msg.text.startsWith('/checkVip'):
             const bVip = await this.vip.checkVip(msg.from.id);

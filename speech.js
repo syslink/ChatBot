@@ -15,6 +15,7 @@ import Languages from './languages.json' assert { type: "json" };
 // aws 语音识别：https://docs.aws.amazon.com/zh_cn/sdk-for-javascript/v3/developer-guide/transcribe-examples-section.html
 // aws 语音合成：
 // https://learn.microsoft.com/zh-cn/azure/cognitive-services/speech-service/language-support?tabs=tts
+// https://speech.microsoft.com/portal/803454d3e71b416e8bb85f8be34071b9/audiocontentcreation/file
 export class SpeechWrapper {
   constructor(telegramBot, SPEECH_KEY, SPEECH_REGION, mongodb, logger) {
     this.telegramBot = telegramBot;
@@ -27,10 +28,11 @@ export class SpeechWrapper {
     this.speechDefaultConfig.speechSynthesisVoiceName = "en-US-JennyNeural"; 
 
     this.userLanaguageSet = {}
+    this.userSpeedSet = {}
   }
 
   async setLanguage(userId, language) {
-    if (Languages[language] != undefined) {
+    if (Languages[language] != null) {
       const userSpeechConfig = {};
       userSpeechConfig.speechRecognitionLanguage = Languages[language]['recognition'];
       userSpeechConfig.speechSynthesisLanguage =  Languages[language]['synthesisLanguage'];
@@ -38,11 +40,49 @@ export class SpeechWrapper {
       this.userLanaguageSet[userId] = userSpeechConfig;
       if (this.mongodb != null)
         await this.mongodb.insertOrUpdateLanguageSetting(getTelegramId(userId), userSpeechConfig);
+      return "";
     }
+    return "对象不存在";
   }
 
-  getLanguageSetting(userId) {
-    return this.userLanaguageSet[userId];
+  async getLanguageSetting(userId) {
+    if (this.userLanaguageSet[userId] != null) {
+      return this.userLanaguageSet[userId];
+    }
+    if (this.mongodb != null) return null;
+
+    const result = await this.mongodb.getLanguageSetting(getTelegramId(userId));
+    if (result == null) return null;
+
+    this.userLanaguageSet[userId] = result;
+    return result;
+  }
+
+  async setSpeed(userId, speed) {
+    if (speed == null || speed.length == 0) speed = 1;
+
+    if (speed < 0.5) speed = 0.5;
+    if (speed > 2) speed = 2;
+    if (speed < 1) {
+      speed = ('-' + (1 - speed) * 100).substring(0, 6) + '%';
+    } else if (speed > 1) {
+      speed = ('+' + (speed - 1) * 100).substring(0, 6) + '%';
+    } else {
+      speed = '0.00%';
+    }
+    this.userSpeedSet[userId] = speed;
+    if (this.mongodb != null)
+        await this.mongodb.insertOrUpdateSpeed(getTelegramId(userId), speed);
+  }
+
+  async getSpeed(userId) {
+    if (this.userSpeedSet[userId] != null) return this.userSpeedSet[userId];
+    const result = await this.mongodb.getSpeed(getTelegramId(userId));
+
+    if (result == null) return '0.00%';
+
+    this.userSpeedSet[userId] = result.speed;
+    return result.speed;
   }
 
   async recognizeVoice(msg, fileName) {
@@ -80,21 +120,36 @@ export class SpeechWrapper {
   }
   
   async synthesizeVoice(prompt, completion, msg, language, bSendTextMsg) {
+    const userId = msg.from.id;
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
     const fileName = `./voiceFiles/${chatId}-${msgId}-res.wav`;
     const outputFileName = `./voiceFiles/${chatId}-${msgId}-res.ogg`;
     const audioConfig = AudioConfig.fromAudioFileOutput(fileName);
-    const curSpeecConfig = this.userLanaguageSet[msg.from.id] == null ? this.speechDefaultConfig : this.userLanaguageSet[msg.from.id];
+    const userLanguageSetting = await this.getLanguageSetting(userId);
+    const curSpeehConfig = userLanguageSetting == null ? this.speechDefaultConfig : userLanguageSetting;
     const tmpLanguageType = language != null ? Languages[language] : null;
     if (tmpLanguageType != null) {
-      curSpeecConfig.speechSynthesisLanguage = tmpLanguageType['synthesisLanguage'];
-      curSpeecConfig.speechSynthesisVoiceName = tmpLanguageType['synthesisVoiceName'];
+      curSpeehConfig.speechSynthesisLanguage = tmpLanguageType['synthesisLanguage'];
+      curSpeehConfig.speechSynthesisVoiceName = tmpLanguageType['synthesisVoiceName'];
     }
-    let synthesizer = new SpeechSynthesizer(curSpeecConfig, audioConfig);
+    let synthesizer = new SpeechSynthesizer(curSpeehConfig, audioConfig);
     this.logger.info("start synthesis voice:", fileName);
     const _this = this;
-    synthesizer.speakTextAsync(completion,
+
+    const speed = await this.getSpeed(userId);
+    const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis"
+                                       xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US">
+                    <voice name='${curSpeehConfig.speechSynthesisVoiceName}'>
+                      <mstts:express-as style='chat'>
+                        <prosody rate="${speed}">
+                          ${completion}
+                        </prosody>
+                      </mstts:express-as>
+                    </voice>
+                  </speak>`;
+    
+    synthesizer.speakSsmlAsync(ssml,
       function (result) {
         if (result.reason === ResultReason.SynthesizingAudioCompleted) {
           _this.logger.debug("synthesis finished.", fileName, ", duration=", result.audioDuration);
@@ -152,15 +207,7 @@ const test = async () => {
     chat: {id: 2},
     message_id: 3
   }
-  fs.access(fileName, fs.constants.F_OK, (err) => {
-    if (err) {
-      console.log('File does not exist');      
-      speech.synthesizeVoice('hello', 'what can i do for you?', msg, '英语', true);
-    } else {
-      console.log('File exists');
-      speech.recognizeVoice(msg, fileName);
-    }
-  });
+  speech.synthesizeVoice('hello', 'what can i do for you? I am Jenny, an super AI, you could ask me anything.', msg, '英语', true);
 }
 
 //test();

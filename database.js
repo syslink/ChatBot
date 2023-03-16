@@ -15,7 +15,9 @@ export class Database {
         this.mongodbo = this.client.db("chatbot");
         this.dialogCol = this.mongodbo.collection('englishDialog');
         this.languageSettingCol = this.mongodbo.collection('languageSetting');
+        this.speedSettingCol = this.mongodbo.collection('speedSetting');
         this.socialEnableCol = this.mongodbo.collection('socialEnable');
+        this.systemRoleCol = this.mongodbo.collection('systemRole');
     }
 
     async insertDialog(telegramId, prompt, completion, contentType, language) {
@@ -55,6 +57,32 @@ export class Database {
 
     async getLanguageSetting(telegramId) {
         const result = await this.languageSettingCol.findOne({ telegramId });
+        return result;
+    }
+
+    async insertOrUpdateSystemRoleSetting(telegramId, systemRoleInfo) {
+        await this.systemRoleCol.updateOne(
+            { telegramId },
+            { $set: { systemRoleInfo } },
+            { upsert: true }
+        );
+    }
+
+    async getSystemRoleSetting(telegramId) {
+        const result = await this.systemRoleCol.findOne({ telegramId });
+        return result;
+    }
+
+    async insertOrUpdateSpeed(telegramId, speed) {
+        await this.speedSettingCol.updateOne(
+            { telegramId },
+            { $set: { speed } },
+            { upsert: true }
+        );
+    }
+
+    async getSpeed(telegramId) {
+        const result = await this.speedSettingCol.findOne({ telegramId });
         return result;
     }
 

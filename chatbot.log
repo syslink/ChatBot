@@ -485,3 +485,175 @@
 [2023-03-08T22:02:04.960] [DEBUG] chatbot - 
 
 ./voiceFiles/849007458-213.ogg => ./voiceFiles/849007458-213.mp3 
+[2023-03-15T18:11:25.473] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:13:29.279] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:14:02.539] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:15:57.562] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:30:28.215] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:30:30.316] [DEBUG] chatbot - synthesis finished. ./voiceFiles/2-3-res.wav , duration= 20750000
+[2023-03-15T18:30:30.613] [DEBUG] chatbot - ./voiceFiles/2-3-res.wav => ./voiceFiles/2-3-res.ogg
+[2023-03-15T18:45:24.339] [INFO] chatbot - start synthesis voice: ./voiceFiles/2-3-res.wav
+[2023-03-15T18:45:26.727] [DEBUG] chatbot - synthesis finished. ./voiceFiles/2-3-res.wav , duration= 64125000
+[2023-03-15T18:45:26.839] [DEBUG] chatbot - ./voiceFiles/2-3-res.wav => ./voiceFiles/2-3-res.ogg
+[2023-03-16T10:05:57.096] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:06:17.430] [INFO] chatbot - --Received message from id: [ 849007458, '/start' ]
+[2023-03-16T10:06:17.637] [DEBUG] chatbot - null 
+[2023-03-16T10:07:32.077] [INFO] chatbot - --Received message from id: [ 849007458, '/help' ]
+[2023-03-16T10:10:56.971] [INFO] chatbot - --Received message from id: [ 849007458, '/info' ]
+[2023-03-16T10:10:56.974] [INFO] chatbot - start to get response from openai [ '/info' ]
+[2023-03-16T10:10:56.990] [ERROR] chatbot - An error occurred during OpenAI request [
+  ReferenceError: getTelegramId is not defined
+      at OpenAI.getSystemRole (file:///C:/Users/chutou/openai/openAI.js:33:43)
+      at OpenAI.getChatGPTAPIResponse (file:///C:/Users/chutou/openai/openAI.js:43:39)
+      at OpenAI.getResponse (file:///C:/Users/chutou/openai/openAI.js:19:25)
+      at TelegramChatBot.response (file:///C:/Users/chutou/openai/telegramBot.js:187:45)
+      at TelegramChatBot.msgHandler (file:///C:/Users/chutou/openai/telegramBot.js:169:24)
+      at TelegramBot.<anonymous> (file:///C:/Users/chutou/openai/telegramBot.js:75:24)
+      at TelegramBot.emit (C:\Users\chutou\openai\node_modules\eventemitter3\index.js:182:35)
+      at TelegramBot.processUpdate (C:\Users\chutou\openai\node_modules\node-telegram-bot-api\src\telegram.js:683:14)
+      at C:\Users\chutou\openai\node_modules\node-telegram-bot-api\src\telegramPolling.js:110:22
+      at Array.forEach (<anonymous>)
+      at C:\Users\chutou\openai\node_modules\node-telegram-bot-api\src\telegramPolling.js:106:17
+      at tryCatcher (C:\Users\chutou\openai\node_modules\bluebird\js\release\util.js:16:23)
+      at Promise._settlePromiseFromHandler (C:\Users\chutou\openai\node_modules\bluebird\js\release\promise.js:547:31)
+      at Promise._settlePromise (C:\Users\chutou\openai\node_modules\bluebird\js\release\promise.js:604:18)
+      at Promise._settlePromise0 (C:\Users\chutou\openai\node_modules\bluebird\js\release\promise.js:649:10)
+      at Promise._settlePromises (C:\Users\chutou\openai\node_modules\bluebird\js\release\promise.js:729:18)
+      at _drainQueueStep (C:\Users\chutou\openai\node_modules\bluebird\js\release\async.js:93:12)
+      at _drainQueue (C:\Users\chutou\openai\node_modules\bluebird\js\release\async.js:86:9)
+      at Async._drainQueues (C:\Users\chutou\openai\node_modules\bluebird\js\release\async.js:102:5)
+      at Async.drainQueues (C:\Users\chutou\openai\node_modules\bluebird\js\release\async.js:15:14)
+      at process.processImmediate (node:internal/timers:476:21)
+]
+[2023-03-16T10:11:38.891] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:11:47.068] [INFO] chatbot - --Received message from id: [ 849007458, '/start' ]
+[2023-03-16T10:11:47.366] [DEBUG] chatbot - null 
+[2023-03-16T10:12:04.161] [INFO] chatbot - --Received message from id: [ 849007458, '/help' ]
+[2023-03-16T10:12:34.886] [INFO] chatbot - --Received message from id: [ 849007458, '/info' ]
+[2023-03-16T10:15:02.570] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:15:09.916] [INFO] chatbot - --Received message from id: [ 849007458, '/help' ]
+[2023-03-16T10:15:10.119] [DEBUG] chatbot - null 
+[2023-03-16T10:15:30.981] [INFO] chatbot - --Received message from id: [ 849007458, '/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误' ]
+[2023-03-16T10:16:11.376] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:16:12.408] [INFO] chatbot - --Received message from id: [ 849007458, '/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误' ]
+[2023-03-16T10:16:12.714] [DEBUG] chatbot - null 
+[2023-03-16T10:30:05.113] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:30:06.128] [INFO] chatbot - --Received message from id: [ 849007458, '/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误' ]
+[2023-03-16T10:30:06.327] [DEBUG] chatbot - null 
+[2023-03-16T10:30:11.546] [INFO] chatbot - --Received message from id: [ 849007458, '/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误' ]
+[2023-03-16T10:30:58.146] [INFO] chatbot - --Received message from id: [ 849007458, 'Could I chatted with you by English?' ]
+[2023-03-16T10:30:58.153] [INFO] chatbot - start to get response from openai [ 'Could I chatted with you by English?' ]
+[2023-03-16T10:31:19.446] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 67.15.129.210:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '67.15.129.210',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"Could I chatted with you by English?"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 278,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-16T10:31:52.724] [INFO] chatbot - --Received message from id: [ 849007458, 'good morning' ]
+[2023-03-16T10:31:52.726] [INFO] chatbot - start to get response from openai [ 'good morning' ]
+[2023-03-16T10:32:13.979] [ERROR] chatbot - An error occurred during OpenAI request [
+  Error: connect ETIMEDOUT 67.15.129.210:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1494:16) {
+    errno: -4039,
+    code: 'ETIMEDOUT',
+    syscall: 'connect',
+    address: '67.15.129.210',
+    port: 443,
+    config: {
+      transitional: [Object],
+      adapter: [Function: httpAdapter],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      validateStatus: [Function: validateStatus],
+      headers: [Object],
+      method: 'post',
+      responseType: 'json',
+      data: '{"model":"gpt-3.5-turbo","messages":[{"role":"system","content":"You are a helpful assistant."},{"role":"user","content":"good morning"}],"max_tokens":500,"top_p":1,"stop":"###","user":"0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7"}',
+      url: 'https://api.openai.com/v1/chat/completions'
+    },
+    request: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: false,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 254,
+      _requestBodyBuffers: [Array],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [ClientRequest],
+      _currentUrl: 'https://api.openai.com/v1/chat/completions',
+      [Symbol(kCapture)]: false
+    },
+    response: undefined,
+    isAxiosError: true,
+    toJSON: [Function: toJSON]
+  }
+]
+[2023-03-16T10:33:53.258] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:37:22.662] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:37:28.605] [INFO] chatbot - --Received message from id: [ 849007458, '/setEnTTS' ]
+[2023-03-16T10:37:28.905] [DEBUG] chatbot - null 
+[2023-03-16T10:37:31.975] [INFO] chatbot - --Received message from id: [ 849007458, '/setEnTTS' ]
+[2023-03-16T10:37:46.468] [INFO] chatbot - --Received message from id: [ 849007458, '/setEnTTS 英国女性' ]
+[2023-03-16T10:44:22.753] [INFO] chatbot - --Received message from id: [ 849007458, '/setSpeed' ]
+[2023-03-16T10:44:37.861] [INFO] chatbot - --Received message from id: [ 849007458, '/setSpeed 1' ]
+[2023-03-16T10:45:29.880] [INFO] chatbot - --Received message from id: [ 849007458, '/setSpeed 1.1' ]
+[2023-03-16T10:48:47.117] [INFO] chatbot - --Bot has been started... 
+[2023-03-16T10:48:54.383] [INFO] chatbot - --Received message from id: [ 849007458, '/setSpeed 1.1' ]
+[2023-03-16T10:48:54.578] [DEBUG] chatbot - {
+  _id: new ObjectId("641280fb5d73cdaf9c27cf37"),
+  telegramId: '0x3a32c873ab8eda287f1be6caf7cfb9cd35e67ecb861203ed1d90d3860db0ccb7',
+  speechRecognitionLanguage: 'en-GB',
+  speechSynthesisLanguage: 'en-GB',
+  speechSynthesisVoiceName: 'en-GB-SoniaNeural'
+} 

@@ -4,6 +4,46 @@
       "synthesisLanguage": "en-US",
       "synthesisVoiceName": "en-US-JennyNeural"
     },
+    "美国女性": {
+      "recognition": "en-US",
+      "synthesisLanguage": "en-US",
+      "synthesisVoiceName": "en-US-JennyNeural"
+    },
+    "美国男性": {
+      "recognition": "en-US",
+      "synthesisLanguage": "en-US",
+      "synthesisVoiceName": "en-US-DavisNeural"
+    },
+    "英国女性": {
+      "recognition": "en-GB",
+      "synthesisLanguage": "en-GB",
+      "synthesisVoiceName": "en-GB-SoniaNeural"
+    },
+    "英国男性": {
+      "recognition": "en-GB",
+      "synthesisLanguage": "en-GB",
+      "synthesisVoiceName": "en-GB-RyanNeural"
+    },
+    "印度女性": {
+      "recognition": "en-IN",
+      "synthesisLanguage": "en-IN",
+      "synthesisVoiceName": "en-IN-NeerjaNeural"
+    },
+    "印度男性": {
+      "recognition": "en-IN",
+      "synthesisLanguage": "en-IN",
+      "synthesisVoiceName": "en-IN-PrabhatNeural"
+    },
+    "新加坡女性": {
+      "recognition": "en-SG",
+      "synthesisLanguage": "en-SG",
+      "synthesisVoiceName": "en-SG-LunaNeural"
+    },
+    "新加坡男性": {
+      "recognition": "en-SG",
+      "synthesisLanguage": "en-SG",
+      "synthesisVoiceName": "en-SG-WayneNeural"
+    },
     "德语": {
       "recognition": "de-DE",
       "synthesisLanguage": "de-DE",
