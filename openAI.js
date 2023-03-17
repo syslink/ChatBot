@@ -163,17 +163,29 @@ const testVoiceRecognize = async (voiceFile) => {
 
 const testVoiceTranslation = async (voiceFile) => {
     dotenv.config();
+    log4js.configure({
+        appenders: { chatbot: { type: "file", filename: "chatbot.log" } },
+        categories: { default: { appenders: ["chatbot"], level: "debug" } },
+    });
+    var logger = log4js.getLogger("chatbot");
+
     const { apiKey, gptModel } = process.env;
     
-    const openAI = new OpenAI(apiKey, gptModel);
+    const openAI = new OpenAI(apiKey, gptModel, null, logger);
     await openAI.getTranslation(voiceFile);
 }
 
 const testTranslate = async (prefix, prompt) => {
     dotenv.config();
+    log4js.configure({
+        appenders: { chatbot: { type: "file", filename: "chatbot.log" } },
+        categories: { default: { appenders: ["chatbot"], level: "debug" } },
+    });
+    var logger = log4js.getLogger("chatbot");
+
     const { apiKey, gptModel } = process.env;
     
-    const openAI = new OpenAI(apiKey, gptModel);
+    const openAI = new OpenAI(apiKey, gptModel, null, logger);
     await openAI.translate(prefix, prompt);
 }
 
