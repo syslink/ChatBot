@@ -166,6 +166,16 @@ export class TelegramChatBot {
             const bVip = await this.vip.checkVip(msg.from.id);
             await this.bot.sendMessage(msg.chat.id, bVip ? "恭喜您是VIP用户" : "对不起，您目前不是VIP用户");
             break;
+          case msg.text.startsWith('/searchPrompt'):
+            let prompt = msg.text.substr('/searchPrompt'.length).trim();
+            prompt = await this.openAI.translateCh2EnWordByWord(prompt);
+            const prompts = await this.mongodb.searchPrompts(prompt);
+            let promptsInfo = '';
+            prompts.map((promptObj, index) => {
+              promptsInfo += index + ': ' + promptObj.chPrompt + '\n\n';
+            })
+            await this.bot.sendMessage(msg.chat.id, promptsInfo);
+            break;
           case msg.text.length >= 2:
             await this.response(msg, msg.type === 'voice');
             break;

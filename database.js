@@ -132,8 +132,15 @@ export class Database {
         await this.promptCol.createIndex({prompt: 'text'});
     }
 
-    async searchPrompts(keyword) {
-        const result = await this.promptCol.find({ $text: { $search: keyword } }).toArray();
+    async searchPrompts(keywords) {
+        keywords = keywords.split(' ');
+        let searchInfo = ""
+        keywords.map(keyword => {
+            keyword = keyword.trim();
+            searchInfo += `\"${keyword}\" `
+        })
+        console.log(searchInfo);
+        const result = await this.promptCol.find({$text: {$search: searchInfo}}).toArray();
         return result;
     }
 
@@ -211,4 +218,4 @@ const testSearchPrompts = async (keyword) => {
 // test();
 // testGetTelegramIds();
 //testCreateIndex4Prompts();
-testSearchPrompts("英语");
+testSearchPrompts("english teacher");

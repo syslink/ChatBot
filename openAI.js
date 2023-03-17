@@ -117,11 +117,23 @@ export class OpenAI {
         return res.data.text;
     }
 
-    async translate(prompt) {
+    async translateCh2EnWordByWord(prompt) {
+        const result = await this.translate("You are a translator who can only do one thing: translate Chinese to English word by word.", prompt);
+        
+        return result;
+    }
+
+    async translateCh2EnBySentence(prompt) {
+        const result = await this.translate("You are a translator who can translate Chinese to English .", prompt);
+        
+        return result;
+    }
+
+    async translate(systemContent, prompt) {
         const res = await this.openAI.createChatCompletion({
             model: this.gptModel,
             messages: [
-                {"role": "system", "content": "You are a translator who can only do one thing: translate Chinese to English."},
+                {"role": "system", "content": systemContent},
                 {"role": "user", "content": prompt}],
             max_tokens: 1000,
             top_p: 1,
@@ -175,7 +187,7 @@ const testVoiceTranslation = async (voiceFile) => {
     await openAI.getTranslation(voiceFile);
 }
 
-const testTranslate = async (prefix, prompt) => {
+const testTranslate = async (prompt) => {
     dotenv.config();
     log4js.configure({
         appenders: { chatbot: { type: "file", filename: "chatbot.log" } },
@@ -186,10 +198,10 @@ const testTranslate = async (prefix, prompt) => {
     const { apiKey, gptModel } = process.env;
     
     const openAI = new OpenAI(apiKey, gptModel, null, logger);
-    const result = await openAI.translate(prefix, prompt);
+    const result = await openAI.translateCh2EnWordByWord(prompt);
     return result;
 }
 
 // await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
-console.log(await testTranslate('英语'));
+//console.log(await testTranslate('英语'));
