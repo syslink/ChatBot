@@ -192,4 +192,4 @@ const testTranslate = async (prefix, prompt) => {
 
 // await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
-console.log(await testTranslate('请翻译为英文:', '英语'));
+console.log(await testTranslate('请将下面句子翻译为英文:', '英语'));
