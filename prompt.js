@@ -10,14 +10,20 @@ export class Prompt {
         this.prompts = [];
     }
 
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async translateAllPrompts2Chinese() {
         const prompts = await this.mongodb.getAllPrompts();
         console.log(prompts.length);
         prompts.map(async (promptInfo, index) => {
-            const result = await this.openAI.getResponse(index, promptInfo.prompt, 1000);
-            console.log(promptInfo.prompt, '->', result);
+            console.log(index, promptInfo.prompt);
+            const result = await this.openAI.getResponse("" + index, "请翻译为中文：" + promptInfo.prompt, 1000);
+            console.log(index, result);
             promptInfo.chPrompt = result;
             await this.mongodb.insertOrUpdatePrompt(promptInfo);
+            await this.sleep(1000);
         })
     }
 }

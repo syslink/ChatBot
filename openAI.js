@@ -116,6 +116,26 @@ export class OpenAI {
         this.logger.debug(JSON.stringify(res.data));
         return res.data.text;
     }
+
+    async translate(prefix, prompt) {
+        const res = await this.openAI.createChatCompletion({
+            model: this.gptModel,
+            messages: [
+                {"role": "system", "content": "You are a translator assistant"},
+                {"role": "user", "content": prefix + prompt}],
+            max_tokens: 1000,
+            top_p: 1,
+            stop: "###"
+        }, { responseType: 'json' });
+        //console.log(JSON.stringify(res.data));
+        let resText = res.data.choices[0].message.content;
+        if (resText.indexOf("\n\n") > 0) {
+            resText = resText.substr(resText.indexOf("\n\n") + "\n\n".length).trim();
+        }
+        resText = resText.trim();
+        this.logger.debug(resText);
+        return resText;
+    }
 }
 
 const testText = async () => {
@@ -149,5 +169,14 @@ const testVoiceTranslation = async (voiceFile) => {
     await openAI.getTranslation(voiceFile);
 }
 
-await testText();
+const testTranslate = async (prefix, prompt) => {
+    dotenv.config();
+    const { apiKey, gptModel } = process.env;
+    
+    const openAI = new OpenAI(apiKey, gptModel);
+    await openAI.translate(prefix, prompt);
+}
+
+// await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
+console.log(await testTranslate('请翻译为英文:', '英语'));

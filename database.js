@@ -128,6 +128,15 @@ export class Database {
         return result.toArray();
     }
 
+    async createEnsureIndexOfPrompt() {
+        await this.promptCol.createIndex({prompt: 'text'});
+    }
+
+    async searchPrompts(keyword) {
+        const result = await this.promptCol.find({ $text: { $search: keyword } }).toArray();
+        return result;
+    }
+
     async insertOrUpdatePrompt(prompt) {
         await this.promptCol.updateOne(
             { _id: prompt._id },
@@ -178,5 +187,28 @@ const testGetTelegramIds = async () => {
     })
 }
 
+const testCreateIndex4Prompts = async () => {
+    dotenv.config();
+    const { mongodbUrl } = process.env;
+    console.log(mongodbUrl);
+    const mongodb = new Database(mongodbUrl);
+    await mongodb.init();
+
+    await mongodb.createEnsureIndexOfPrompt();
+}
+
+const testSearchPrompts = async (keyword) => {
+    dotenv.config();
+    const { mongodbUrl } = process.env;
+    console.log(mongodbUrl);
+    const mongodb = new Database(mongodbUrl);
+    await mongodb.init();
+
+    const result = await mongodb.searchPrompts(keyword);
+    console.log(result);
+}
+
 // test();
 // testGetTelegramIds();
+//testCreateIndex4Prompts();
+testSearchPrompts("英语");
