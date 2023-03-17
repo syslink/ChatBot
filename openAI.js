@@ -117,12 +117,12 @@ export class OpenAI {
         return res.data.text;
     }
 
-    async translate(prefix, prompt) {
+    async translate(prompt) {
         const res = await this.openAI.createChatCompletion({
             model: this.gptModel,
             messages: [
-                {"role": "system", "content": "You are a translator assistant"},
-                {"role": "user", "content": prefix + prompt}],
+                {"role": "system", "content": "You are a translator who can only do one thing: translate Chinese to English."},
+                {"role": "user", "content": prompt}],
             max_tokens: 1000,
             top_p: 1,
             stop: "###"
@@ -192,4 +192,4 @@ const testTranslate = async (prefix, prompt) => {
 
 // await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
-console.log(await testTranslate('请将下面句子翻译为英文:', '英语'));
+console.log(await testTranslate('英语'));
