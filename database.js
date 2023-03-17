@@ -18,6 +18,7 @@ export class Database {
         this.speedSettingCol = this.mongodbo.collection('speedSetting');
         this.socialEnableCol = this.mongodbo.collection('socialEnable');
         this.systemRoleCol = this.mongodbo.collection('systemRole');
+        this.promptCol = this.mongodbo.collection('prompts');
     }
 
     async insertDialog(telegramId, prompt, completion, contentType, language) {
@@ -120,6 +121,19 @@ export class Database {
     async getAllTelegramId() {
         const telegramIds = await this.dialogCol.distinct('telegramId');
         return telegramIds;
+    }
+
+    async getAllPrompts() {
+        const result = await this.promptCol.find();
+        return result.toArray();
+    }
+
+    async insertOrUpdatePrompt(prompt) {
+        await this.promptCol.updateOne(
+            { _id: prompt._id },
+            { $set: prompt },
+            { upsert: true }
+        );
     }
 }
 

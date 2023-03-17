@@ -34,7 +34,8 @@ export class OpenAI {
 
     async getSystemRole(userId) {
         if (this.systemRoleSetting[userId] != null) return this.systemRoleSetting[userId];
-        const result = await this.mongodb.getSystemRoleSetting(getTelegramId(userId));
+        
+        const result = this.mongodb == null ? null : await this.mongodb.getSystemRoleSetting(getTelegramId(userId));
     
         if (result == null) return 'You are a helpful assistant.';
     
@@ -128,7 +129,7 @@ const testText = async () => {
     const { apiKey, gptModel } = process.env;
     
     const openAI = new OpenAI(apiKey, gptModel, null, logger);
-    const response = await openAI.getResponse('abcd', '系分析下最近中美关系', 2000);
+    const response = await openAI.getResponse('abcd', 'good morning', 2000);
     console.log(response);
 }
 
@@ -148,5 +149,5 @@ const testVoiceTranslation = async (voiceFile) => {
     await openAI.getTranslation(voiceFile);
 }
 
-// await testText();
+await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
