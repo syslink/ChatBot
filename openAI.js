@@ -186,7 +186,8 @@ const testTranslate = async (prefix, prompt) => {
     const { apiKey, gptModel } = process.env;
     
     const openAI = new OpenAI(apiKey, gptModel, null, logger);
-    await openAI.translate(prefix, prompt);
+    const result = await openAI.translate(prefix, prompt);
+    return result;
 }
 
 // await testText();
