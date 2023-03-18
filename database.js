@@ -19,6 +19,7 @@ export class Database {
         this.socialEnableCol = this.mongodbo.collection('socialEnable');
         this.systemRoleCol = this.mongodbo.collection('systemRole');
         this.promptCol = this.mongodbo.collection('prompts');
+        this.gptVersionCol = this.mongodbo.collection('gptVersion');
     }
 
     async insertDialog(telegramId, prompt, completion, contentType, language) {
@@ -85,6 +86,20 @@ export class Database {
     async getSpeed(telegramId) {
         const result = await this.speedSettingCol.findOne({ telegramId });
         return result;
+    }
+
+
+    async insertOrUpdateGPTVersion(telegramId, gptVersion) {
+        await this.gptVersionCol.updateOne(
+            { telegramId },
+            { $set: { gptVersion } },
+            { upsert: true }
+        );
+    }
+
+    async getGPTVersion(telegramId) {
+        const result = await this.gptVersionCol.findOne({ telegramId });
+        return result == null ? null : result.gptVersion;
     }
 
     async getSomeoneCountOfOneDay(telegramId, date) {

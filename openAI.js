@@ -46,8 +46,13 @@ export class OpenAI {
     async getChatGPTAPIResponse(userId, prompt, maxTokens) {
         const context = this.getUserContext(userId);
         const systemRole = await this.getSystemRole(userId);
+        const userGptVersion = await this.mongodb.getGPTVersion(getTelegramId(userId));
+        let gptModel = this.gptModel;
+        if (userGptVersion == '4') {
+            gptModel = 'gpt-4'
+        }
         const res = await this.openAI.createChatCompletion({
-            model: this.gptModel,
+            model: gptModel,
             messages: [
                 {"role": "system", "content": systemRole},
                 ...context,

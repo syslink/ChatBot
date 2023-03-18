@@ -129,8 +129,7 @@ export class TelegramChatBot {
           case msg.text.startsWith('/start'):
           case msg.text.startsWith('/info'):
             await this.bot.sendMessage(msg.chat.id, 
-              '👋您好！我是搭载ChatGPT内核的聊天机器人，您可以同我文字交谈，也可以跟我进行多国语言口语对话，\
-              所有口语我都将自动转译为英语，并用英语口语跟您对话。');
+              '👋您好！我是搭载ChatGPT内核的聊天机器人，您可以同我文字交谈，也可以跟我进行多国语言口语对话，所有口语我都将自动转译为英语，并用英语口语跟您对话。');
             await this.bot.sendMessage(msg.chat.id, 
               '除此之外，如果您需要我将文本翻译为其它语言并让我朗读出来，请按以下格式给我发送文本信息：翻译为英语：xxx, 翻译为法语：xxx');
             await this.bot.sendMessage(msg.chat.id, 
@@ -143,7 +142,7 @@ export class TelegramChatBot {
                                                    \n/info 获取本机器人介绍\
                                                    \n\n/setRole 设置机器人基本角色，这样机器人会尽量按照您设置好的角色特点跟您对话，譬如想要机器人扮演一个英语教师的角色，可以向我发送：/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误\
                                                    \n\n/setEnTTS 设置机器人的英语口语合成角色，目前支持美国、英国、印度、新加坡这四个国家的男女发音，默认为美国女性口音，如果您想听印度女性的英语口音，可以向我发送：/setEnTTS 印度女性，当想听英国男性的英语口音，则向我发送：/setEnTTS 英国男性\
-                                                   \n\n/setSpeed 设置机器人的语速，正常语速为1，大于1则加快语速，否则为减慢语速，最高2，最低0.5，譬如想语速提高到1.5倍，可以向我发送：/setSpeed 1.5');
+                                                   \n\n/setSpeed 设置机器人的口语语速，正常语速为1，大于1则加快语速，否则为减慢语速，最高2，最低0.5，譬如想语速提高到1.5倍，可以向我发送：/setSpeed 1.5');
             break;
           case msg.text.startsWith('/verify'):
             const signature = sign(msg.from.id, msg.text.substr('/verify'.length).trim());
@@ -151,16 +150,48 @@ export class TelegramChatBot {
             await this.bot.sendMessage(msg.chat.id, JSON.stringify(signature));
             break;
           case msg.text.startsWith('/setRole'):
-            await this.openAI.setSystemRole(msg.from.id, msg.text.substr('/setRole'.length).trim());
-            await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
+            const roleInfo = msg.text.substr('/setRole'.length).trim();
+            if (roleInfo.length == 0) {
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在setRole后面加上您对角色的描述");
+            } else {
+              await this.openAI.setSystemRole(msg.from.id, roleInfo);
+              await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
+            }
             break;
           case msg.text.startsWith('/setEnTTS'):
-            const result = await this.speech.setLanguage(msg.from.id, msg.text.substr('/setEnTTS'.length).trim());
-            await this.bot.sendMessage(msg.chat.id, result.length == 0 ? "恭喜您设置成功" : "对不起，设置错误：" + result);
+            const ttsInfo = msg.text.substr('/setEnTTS'.length).trim();
+            if (ttsInfo.length == 0) {
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在setEnTTS后面加上您想设置的口语角色");
+            } else {
+              const result = await this.speech.setLanguage(msg.from.id, ttsInfo);
+              await this.bot.sendMessage(msg.chat.id, result.length == 0 ? "恭喜您设置成功" : "对不起，设置错误：" + result);
+            }
             break;
           case msg.text.startsWith('/setSpeed'):
-            await this.speech.setSpeed(msg.from.id, msg.text.substr('/setSpeed'.length).trim());
-            await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
+            const speedInfo = msg.text.substr('/setSpeed'.length).trim();
+            if (speedInfo.length == 0) {
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在setSpeed后面加上您想设置语速");
+            } else {
+              await this.speech.setSpeed(msg.from.id, speedInfo);
+              await this.bot.sendMessage(msg.chat.id, "恭喜您设置成功");
+            }
+            break;
+          case msg.text.startsWith('/setGPT'):
+            const gptVersion = msg.text.substr('/setGPT'.length).trim();
+            if (gptVersion.length == 0 || (gptVersion != '4' && gptVersion != '3.5')) {
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在gptVersion后面加上您想使用的GPT版本：4 或 3.5");
+            } else {
+              if (gptVersion == '4') {
+                const hasBeenVIP = await this.vip.checkVip(msg.from.id);
+                if (!hasBeenVIP) {
+                  await this.bot.sendMessage(msg.chat.id, "对不起，您目前不是VIP用户，无法使用GPT-4，想成为VIP用户，请登录网站https://gpt.cryptometa.ai进行操作");
+                } else {
+                  this.mongodb.insertOrUpdateGPTVersion(getTelegramId(msg.from.id), '4');
+                }
+              } else {
+                this.mongodb.insertOrUpdateGPTVersion(getTelegramId(msg.from.id), gptVersion);
+              }
+            }
             break;
           case msg.text.startsWith('/checkVip'):
             const bVip = await this.vip.checkVip(msg.from.id);
@@ -168,13 +199,17 @@ export class TelegramChatBot {
             break;
           case msg.text.startsWith('/searchPrompt'):
             let prompt = msg.text.substr('/searchPrompt'.length).trim();
-            prompt = await this.openAI.translateCh2EnWordByWord(prompt);
-            const prompts = await this.mongodb.searchPrompts(prompt);
-            let promptsInfo = '';
-            prompts.map((promptObj, index) => {
-              promptsInfo += index + ': ' + promptObj.chPrompt + '\n\n';
-            })
-            await this.bot.sendMessage(msg.chat.id, promptsInfo);
+            if (prompt.length == 0) {
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请输入您要查询的提示词");
+            } else {
+              prompt = await this.openAI.translateCh2EnWordByWord(prompt);
+              const prompts = await this.mongodb.searchPrompts(prompt);
+              let promptsInfo = '';
+              prompts.map((promptObj, index) => {
+                promptsInfo += '[' + index + ']: ' + promptObj.chPrompt + '\n\n';
+              })
+              await this.bot.sendMessage(msg.chat.id, promptsInfo);
+            }
             break;
           case msg.text.length >= 2:
             await this.response(msg, msg.type === 'voice');
