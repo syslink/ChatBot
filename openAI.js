@@ -16,7 +16,7 @@ export class OpenAI {
     }
 
     async getResponse(userId, prompt, maxTokens) {
-        if (this.gptModel == 'gpt-3.5-turbo') {
+        if (this.gptModel == 'gpt-3.5-turbo' || this.gptModel == 'gpt-4') {
             return this.getChatGPTAPIResponse(userId, prompt, maxTokens);
         } else if (this.gptModel == 'text-davinci-003') {
             return this.getDavinciAPIResponse(userId, prompt, maxTokens);
