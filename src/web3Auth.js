@@ -2,10 +2,11 @@ import Web3 from "web3";
 import * as dotenv from 'dotenv';
 import vipABI from './vip.json' assert { type: "json" };
 import abi from 'ethereumjs-abi';
+import { recoverPersonalSignature } from 'eth-sig-util';
 
 dotenv.config()
 
-const web3 = new Web3('https://nd-645-530-838.p2pify.com/181a9755ad317732b98d898de7107adf');
+const web3 = new Web3('https://eth-mainnet.g.alchemy.com/v2/v0PproF8lbsKkBDLqruaGyMq2OK-3_f5'); //'https://nd-645-530-838.p2pify.com/181a9755ad317732b98d898de7107adf'
 const { privateKey, vipContractAddr } = process.env;
 
 const vipContract = new web3.eth.Contract(vipABI, vipContractAddr);
@@ -24,6 +25,13 @@ export function sign(userName, userAddr) {
     const signature = web3.eth.accounts.sign(messageHash, privateKey);
     const result = {telegramId, v: signature.v, s: signature.s, r: signature.r}
     return result;
+}
+
+export function recoverAddress(sign) {
+    const exampleMessage = 'Example `personal_sign` message';
+    const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`;
+    const address = recoverPersonalSignature({ data: msg, sig: sign});
+    return address;
 }
 
 export async function checkVip(userId) {
@@ -73,3 +81,4 @@ export async function checkVip(userId) {
 // console.log(messageHash)
 // console.log(web3.eth.accounts.recover(messageHash, signature.v, signature.r, signature.s, true));
 //console.log(web3.eth.accounts.recover(signature.messageHash, signature, true));
+

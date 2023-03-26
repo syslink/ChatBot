@@ -20,11 +20,12 @@ export class Database {
         this.systemRoleCol = this.mongodbo.collection('systemRole');
         this.promptCol = this.mongodbo.collection('prompts');
         this.gptVersionCol = this.mongodbo.collection('gptVersion');
+        this.usageStatCol = this.mongodbo.collection('usageStat');
     }
 
-    async insertDialog(telegramId, prompt, completion, contentType, language) {
+    async insertDialog(telegramId, prompt, completion, contentType, language, usage) {
         const today = new Date();
-        await this.dialogCol.insertOne({telegramId, prompt, completion, contentType, language, 
+        await this.dialogCol.insertOne({telegramId, prompt, completion, contentType, language, usage,
                                         time: today.getTime(),
                                         date: getCurDate(today), 
                                         week: getWeek(today),
@@ -166,6 +167,19 @@ export class Database {
             { upsert: true }
         );
     }
+
+    async getUserUsage(telegramId) {
+        const result = await this.usageStatCol.findOne({ telegramId });
+        return result == null ? null : result.usage;
+    }
+
+    async insertOrUpdateUsage(telegramId, usage) {
+        await this.usageStatCol.updateOne(
+            { telegramId },
+            { $set: { usage } },
+            { upsert: true }
+        );
+    }
 }
 
 const test = async () => {
@@ -230,7 +244,44 @@ const testSearchPrompts = async (keyword) => {
     console.log(result);
 }
 
+const testUsage = async (telegramId, model, promptTokens, completionTokens, cost) => {
+    dotenv.config();
+    const { mongodbUrl } = process.env;
+    const mongodb = new Database(mongodbUrl);
+    await mongodb.init();
+
+    let usage = await mongodb.getUserUsage(telegramId);
+    console.log(usage, '\n\n');
+
+    if (usage != null) {
+        if (usage[model] != null) {
+            usage[model].promptTokens += promptTokens;
+            usage[model].completionTokens += completionTokens;
+            usage[model].totalCost += cost;
+        } else {
+            usage[model] = {
+                promptTokens,
+                completionTokens,
+                totalCost: cost
+            }
+        }
+    } else {
+        usage = {}
+        usage[model] = {
+            promptTokens,
+            completionTokens,
+            totalCost: cost
+        }
+    }
+
+    await mongodb.insertOrUpdateUsage(telegramId, usage);
+
+    console.log(await mongodb.getUserUsage(telegramId));
+}
+
 // test();
 // testGetTelegramIds();
-//testCreateIndex4Prompts();
-testSearchPrompts("english teacher");
+// testCreateIndex4Prompts();
+// testSearchPrompts("english teacher");
+
+// testUsage('1234', 'gpt-4', 100, 101, 1);

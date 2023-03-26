@@ -3,7 +3,40 @@ import * as dotenv from 'dotenv';
 import log4js from 'log4js';
 import fs from 'fs';
 import { getTelegramId } from './web3Auth.js';
+import gptFee from './gptFee.json' assert { type: "json" };
 
+// price: https://openai.com/pricing
+/*
+// gpt- 4 
+Model	        Prompt	            Completion        version            freeTokens
+8K context	$0.03 / 1K tokens	$0.06 / 1K tokens    gpt-4                  10K
+32K context	$0.06 / 1K tokens	$0.12 / 1K tokens    gpt-4-32k-0314          5K
+
+// gpt-3.5
+Model	            Usage                 freeTokens
+gpt-3.5-turbo	$0.002 / 1K tokens           50K
+
+{
+telegramId: "",
+usage: {
+    gpt-4: {
+        prompt: 1000,
+        completion: 10000,
+        totalCost: 10      
+    },
+    gpt-4-32K: {
+        prompt: 1000,
+        completion: 10000,  
+        totalCost: 10          
+    },
+    gpt-3.5-turbo: {
+        prompt: 1000,
+        completion: 10000, 
+        totalCost: 10      
+    }
+}
+}
+*/
 export class OpenAI {
     constructor(apiKey, gptModel, mongodb, logger) {
         const configuration = new Configuration({ apiKey });
@@ -46,11 +79,10 @@ export class OpenAI {
     async getChatGPTAPIResponse(userId, prompt, maxTokens) {
         const context = this.getUserContext(userId);
         const systemRole = await this.getSystemRole(userId);
-        const userGptVersion = await this.mongodb.getGPTVersion(getTelegramId(userId));
-        let gptModel = this.gptModel;
-        if (userGptVersion == '4') {
-            gptModel = 'gpt-4'
-        }
+        const telegramId = getTelegramId(userId);
+        const userGptVersion = await this.mongodb.getGPTVersion(telegramId);
+        let gptModel = userGptVersion != null ? userGptVersion : this.gptModel;
+
         const res = await this.openAI.createChatCompletion({
             model: gptModel,
             messages: [
@@ -70,7 +102,13 @@ export class OpenAI {
         resText = resText.trim();
         this.logger.debug(resText);
         this.saveContext(userId, prompt, resText);
-        return resText;
+        this.mongodb.insertOrUpdateUsage(telegramId, usage);
+        return {response: resText, usage: res.data.usage};
+    }
+
+    async updateUsage(userId, model, curUsage) {
+        const telegramId = getTelegramId(userId);
+        // get previous usage
     }
 
     async getDavinciAPIResponse(userId, prompt, maxTokens) {
@@ -201,6 +239,8 @@ const testTranslate = async (prompt) => {
     var logger = log4js.getLogger("chatbot");
 
     const { apiKey, gptModel } = process.env;
+
+    //console.log(JSON.parse(gptFee));
     
     const openAI = new OpenAI(apiKey, gptModel, null, logger);
     const result = await openAI.translateCh2EnWordByWord(prompt);
@@ -210,3 +250,5 @@ const testTranslate = async (prompt) => {
 // await testText();
 // await testVoiceTranslation('./voiceFiles/849007458-213.mp3');
 //console.log(await testTranslate('英语'));
+
+console.log(gptFee);

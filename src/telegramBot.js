@@ -142,7 +142,8 @@ export class TelegramChatBot {
                                                    \n/info 获取本机器人介绍\
                                                    \n\n/setRole 设置机器人基本角色，这样机器人会尽量按照您设置好的角色特点跟您对话，譬如想要机器人扮演一个英语教师的角色，可以向我发送：/setRole 我是一个英语教师，可以跟用户进行英语对话，并且当用户使用英语出错的时候，可以帮用户指出错误\
                                                    \n\n/setEnTTS 设置机器人的英语口语合成角色，目前支持美国、英国、印度、新加坡这四个国家的男女发音，默认为美国女性口音，如果您想听印度女性的英语口音，可以向我发送：/setEnTTS 印度女性，当想听英国男性的英语口音，则向我发送：/setEnTTS 英国男性\
-                                                   \n\n/setSpeed 设置机器人的口语语速，正常语速为1，大于1则加快语速，否则为减慢语速，最高2，最低0.5，譬如想语速提高到1.5倍，可以向我发送：/setSpeed 1.5');
+                                                   \n\n/setSpeed 设置机器人的口语语速，正常语速为1，大于1则加快语速，否则为减慢语速，最高2，最低0.5，譬如想语速提高到1.5倍，可以向我发送：/setSpeed 1.5\
+                                                   \n\n/setGPT 设置您希望使用的GPT版本（默认为gpt-3.5-turbo）：gpt-4, gpt-4-32k 或 gpt-3.5-turbo，版本之间的具体区别请参考：https://platform.openai.com/docs/models/overview');
             break;
           case msg.text.startsWith('/verify'):
             const signature = sign(msg.from.id, msg.text.substr('/verify'.length).trim());
@@ -179,9 +180,9 @@ export class TelegramChatBot {
           case msg.text.startsWith('/setGPT'):
             const gptVersion = msg.text.substr('/setGPT'.length).trim();
             if (gptVersion.length == 0 || (gptVersion != '4' && gptVersion != '3.5')) {
-              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在gptVersion后面加上您想使用的GPT版本：4 或 3.5");
+              await this.bot.sendMessage(msg.chat.id, "对不起，命令不正确，请在setGPT后加上您想使用的GPT版本：gpt-4, gpt-4-32k 或 gpt-3.5-turbo，具体区别请参考：https://platform.openai.com/docs/models/overview");
             } else {
-              if (gptVersion == '4') {
+              if (gptVersion.startsWith('gpt-4')) {
                 const hasBeenVIP = await this.vip.checkVip(msg.from.id);
                 if (!hasBeenVIP) {
                   await this.bot.sendMessage(msg.chat.id, "对不起，您目前不是VIP用户，无法使用GPT-4，想成为VIP用户，请登录网站https://gpt.cryptometa.ai进行操作");
@@ -230,18 +231,18 @@ export class TelegramChatBot {
           }, 5000);
           const prompt = msg.text.startsWith(this.groupPrefix) ? msg.text.replace(this.groupPrefix, '').trim() : msg.text.trim();
           this.logger.info('start to get response from openai', prompt);
-          const resText = await this.openAI.getResponse(telegramId, prompt, bVoice ? 200 : 500);
-          
+          const responseInfo = await this.openAI.getResponse(telegramId, prompt, bVoice ? 200 : 500);
+          const response = responseInfo.response;
           if (!bVoice) {
-            await this.bot.sendMessage(msg.chat.id, resText);
+            await this.bot.sendMessage(msg.chat.id, response);
             if (msg.text.startsWith("翻译为")) {
               const language = msg.text.substr("翻译为".length, 2);
-              await this.speech.synthesizeVoice(prompt, resText, msg, language);
+              await this.speech.synthesizeVoice(prompt, response, msg, language);
             } else {
-              await this.mongodb.insertDialog(telegramId, prompt, resText, 'text', '');
+              await this.mongodb.insertDialog(telegramId, prompt, response, 'text', '', responseInfo.usage);
             }
           } else {
-            await this.speech.synthesizeVoice(prompt, resText, msg, null, true);
+            await this.speech.synthesizeVoice(prompt, response, msg, null, true, responseInfo.usage);
           }
           clearInterval(intervalId);
           

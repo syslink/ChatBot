@@ -1,6 +1,5 @@
 {
   "name": "openai",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@arbitrum/sdk": "^3.1.2",
     "@aws-sdk/client-polly": "^3.282.0",
     "@aws-sdk/client-s3": "^3.282.0",
     "@aws-sdk/s3-request-presigner": "^3.282.0",
@@ -17,7 +17,10 @@
     "aws-sdk": "^2.1328.0",
     "chatgpt": "^4.2.0",
     "dotenv": "^16.0.3",
+    "eth-sig-util": "^3.0.1",
+    "ethereum-public-key-to-address": "^0.0.5",
     "ethereumjs-abi": "^0.6.8",
+    "ethers": "^6.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "log4js": "^6.8.0",
     "log4js-node-mongodb": "^2.2.1",

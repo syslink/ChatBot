@@ -54,9 +54,9 @@ export async function checkVip(userId) {
 
 // console.log(web3.utils.keccak256('100'));
 
-//console.log(abi.solidityPack(['bytes32', 'address'], ['0x8c18210df0d9514f2d2e5d8ca7c100978219ee80d3968ad850ab5ead208287b3', '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4']).toString('hex'))
-//console.log(abi.rawEncode(['string', 'address'], ['0x8c18210df0d9514f2d2e5d8ca7c100978219ee80d3968ad850ab5ead208287b3', '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4']).toString('hex'))
-//console.log(web3.utils.keccak256("0x8c18210df0d9514f2d2e5d8ca7c100978219ee80d3968ad850ab5ead208287b35b38da6a701c568545dcfcb03fcb875f56beddc4"))
+//console.log(abi.solidityPack(['bytes32', 'address'], ['', '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4']).toString('hex'))
+//console.log(abi.rawEncode(['string', 'address'], ['', '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4']).toString('hex'))
+//console.log(web3.utils.keccak256(""))
 
 // console.log(web3.eth.accounts.privateKeyToAccount(privateKey).address);
 

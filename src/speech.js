@@ -119,7 +119,7 @@ export class SpeechWrapper {
     });
   }
   
-  async synthesizeVoice(prompt, completion, msg, language, bSendTextMsg) {
+  async synthesizeVoice(prompt, completion, msg, language, bSendTextMsg, usage) {
     const userId = msg.from.id;
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
@@ -166,7 +166,7 @@ export class SpeechWrapper {
                     await _this.telegramBot.getNativeBot().sendVoice(chatId, outputFileName, {duration: parseInt(result.audioDuration / 1000000) / 10});
                   }
                   if (_this.mongodb != null) 
-                    await _this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, 'voice', curSpeecConfig.speechRecognitionLanguage);
+                    await _this.mongodb.insertDialog(getTelegramId(msg.from.id), prompt, completion, 'voice', curSpeecConfig.speechRecognitionLanguage, usage);
                 })
                 .on('error', function(err) {
                   _this.logger.error(fileName + ' =xx=> ' + outputFileName + ", error:" + err.message);
